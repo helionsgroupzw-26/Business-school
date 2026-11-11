@@ -15,17 +15,19 @@ export function FellowshipHome(){return <div className="fellowship-public">
 </div>}
 export function FellowshipApplication(){return <main className="wrap fellowship-inner"><span className="eyebrow">Join the movement</span><h1>How to join the Mari Matters Fellowship</h1><p className="lead">We welcome people who care about financial wellbeing in their communities and are willing to commit time to learning, ethical service and practical action. Participation is cohort-based, with selection taking place outside this portal.</p><div className="application-steps">{[{title:'Watch for a cohort announcement',text:'Mari Matters will announce application dates and share an external application form through its official communication channels. No application window is being advertised on this portal at present.'},{title:'Apply and explain your motivation',text:'Applicants should describe the community they hope to serve, why financial literacy matters to them and how they would contribute to a practical community project.'},{title:'Selection and acceptance',text:'The Mari Matters team reviews applications and communicates outcomes directly. Being interested in the fellowship does not automatically guarantee admission.'},{title:'Receive your cohort registration code',text:'Successful applicants receive a cohort allocation and the shared registration code for their cohort. Use the code to create an account on this portal.'}].map((s,i)=><article key={i} className="panel"><span className="application-step-num">0{i+1}</span><h3>{s.title}</h3><p>{s.text}</p></article>)}</div><section className="panel application-callout"><h2>Already accepted?</h2><p>Have your acceptance email and shared fellowship registration code ready. New fellow accounts cannot be created without a valid code, and codes only work for their intended recipients.</p><Link className="btn" to="/login">Fellow sign in and activation →</Link></section></main>}
 async function getMemberData(userId){
- const member=await supabase.from('fellowship_members').select('*,fellowship_cohorts(name,starts_on,ends_on,status,fellowship_course_id)').eq('user_id',userId).maybeSingle();
+ const member=await supabase.from('fellowship_members').select('*').eq('user_id',userId).maybeSingle();
  if(member.error)throw member.error;
  if(!member.data)return {member:null};
- const [lessons,progress,project,cert]=await Promise.all([
- supabase.from('lessons').select('id,title,position').eq('course_id',member.data.fellowship_cohorts.fellowship_course_id).order('position'),
- supabase.from('lesson_progress').select('lesson_id').eq('user_id',userId),
- supabase.from('fellowship_projects').select('*').eq('member_id',member.data.id).maybeSingle(),
- supabase.from('fellowship_certificates').select('*').eq('member_id',member.data.id).maybeSingle()
+ const cohort=await supabase.rpc('my_fellowship_cohort');
+ if(cohort.error)throw cohort.error;
+ if(!cohort.data?.fellowship_course_id)throw new Error('Your cohort is not available. Please contact the fellowship administrator.');
+ const fellow={...member.data,fellowship_cohorts:cohort.data};
+ const [lessons,progress]=await Promise.all([
+  supabase.from('lessons').select('id,title,position').eq('course_id',cohort.data.fellowship_course_id).order('position'),
+  supabase.from('lesson_progress').select('lesson_id').eq('user_id',userId)
  ]);
- for(const r of [lessons,progress,project,cert])if(r.error)throw r.error;
- return {member:member.data,lessons:lessons.data||[],progress:progress.data||[],project:project.data,certificate:cert.data};
+ for(const response of [lessons,progress])if(response.error)throw response.error;
+ return {member:fellow,lessons:lessons.data||[],progress:progress.data||[]};
 }
 export function FellowshipInviteActivate({user}){const [code,setCode]=useState(()=>sessionStorage.getItem('mari_pending_code')||''),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
  async function activate(e){e.preventDefault();setBusy(true);setMessage('');const {data,error}=await supabase.rpc('redeem_shared_fellowship_code',{p_code:code.trim()});setBusy(false);if(error)setMessage(errorText(error));else{sessionStorage.removeItem('mari_pending_code');setMessage('Invitation activated! You have joined '+data.cohort+'. Open your fellowship dashboard.');}}
