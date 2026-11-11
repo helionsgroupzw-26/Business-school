@@ -165,3 +165,32 @@ footer small{color:#8eaacc}
 .fellow-reading .reading-subhead{font-size:15.5px;line-height:1.45;color:#0b3b75;letter-spacing:.06em;font-weight:850;margin:31px 0 12px;padding:12px 14px 12px 16px;background:#f1f6ff;border-left:3px solid #d63b52;border-radius:0 7px 7px 0}
 .lessoncontent{min-width:0}.lessoncontent h2{line-height:1.35}
 @media(max-width:650px){.fellow-reading{font-size:15px}.fellow-reading .reading-subhead{font-size:14px}}
+
+/* Focused fellowship reader: one unit at a time, unfinished units in sidebar */
+.fellowship-reader{grid-template-columns:minmax(245px,295px) minmax(0,1fr);align-items:start;margin-top:25px}
+.fellowship-sidebar{position:sticky;top:106px;max-height:calc(100vh - 125px);overflow-y:auto}
+.fellowship-sidebar h3{margin:0 0 8px;font-size:20px}
+.sidebar-hint{font-size:12px;line-height:1.6;margin:0 0 22px}
+.sidebar-week{font-size:11px;font-weight:850;letter-spacing:.12em;color:#a63145;padding:18px 9px 6px}
+.fellowship-sidebar .lesson{display:flex;align-items:start;gap:9px;font-size:13px;line-height:1.5;font-weight:600;background:#f2f6fc;color:#193d69;margin:5px 0;padding:11px 12px;text-align:left}
+.fellowship-sidebar .lesson span:last-child{flex:1}
+.fellowship-sidebar .lesson:hover{background:#e5f0fc}
+.fellowship-sidebar .lesson.selected{background:#dceafc;color:#093b78;border-left:4px solid #155da8}
+.lesson-state{font-size:16px;line-height:1.3}
+.completed-units{border-top:1px solid #e1e9f2;margin-top:18px;padding-top:12px}
+.completed-units summary{font-weight:750;font-size:13px;color:#23634b;cursor:pointer;padding:9px 0}
+.completed-units .completed-lesson{background:#f0f8f4;color:#356754;font-weight:500}
+.sidebar-finished{font-size:13px;color:#247351;font-weight:750}
+.lesson-next-actions{margin-top:30px;border-top:1px solid #dfe8f2;padding:26px 0 0}
+.lesson-next-actions p{margin-top:0}
+.lesson-next-actions button{width:auto;max-width:100%}
+.fellowship-reader .lessoncontent{min-width:0;padding:30px}
+.fellowship-reader .lessoncontent>h2{font-size:clamp(1.4rem,2.7vw,2rem);margin:14px 0}
+.learning-done{padding:12px}
+@media(max-width:750px){
+ .fellowship-reader{grid-template-columns:1fr}
+ .fellowship-sidebar{position:static;max-height:none;overflow:visible}
+ .fellowship-reader .lessoncontent{padding:20px}
+ .fellowship-sidebar .lesson{font-size:14px}
+ .lesson-next-actions button{width:100%}
+}
