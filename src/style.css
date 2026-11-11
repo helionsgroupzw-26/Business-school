@@ -73,3 +73,87 @@ footer strong span{color:#f15b68;font-family:"Brush Script MT",cursive;font-size
 footer p{margin:0;color:#bdcee3;font-size:13px}
 footer small{color:#8eaacc}
 @media(max-width:800px){.hero-content{grid-template-columns:1fr;gap:25px}.hero-feature{max-width:550px}.learning-pillars{grid-template-columns:1fr}.academy-cta{display:block}.academy-cta .btn{margin-top:12px}.brand-label{display:none}.brand-mark{min-width:unset}.brand-mari{font-size:22px}.brand-matters{font-size:24px}.hero{padding:53px 0 60px}}
+
+
+/* Fellowship-only public portal and member workspace */
+.fellowship-public{background:#fff}
+.fellowship-hero{background:radial-gradient(circle at 82% 22%,#233f83 0%,transparent 38%),linear-gradient(125deg,#061932,#0a3069 65%,#0a2051);padding:85px 0 93px;color:#fff}
+.fellowship-hero-grid{display:grid;grid-template-columns:1.3fr .77fr;align-items:center;gap:56px}
+.fellowship-hero .eyebrow{color:#ffabb8;letter-spacing:.13em}
+.fellowship-hero h1{font-size:clamp(2.7rem,5vw,4.55rem);line-height:1.12;margin:17px 0 25px;color:#fff;max-width:770px}
+.fellowship-hero h1 em{font-style:normal;color:#fb7b8e}
+.fellowship-hero p{color:#dbe7f7;font-size:16px;line-height:1.85}
+.fellowship-hero .hero-actions .btn{background:#e53a4e}
+.fellowship-hero .hero-actions .btn-ghost{background:transparent;border:1px solid #a2b8df}
+.fellowship-hero-foot{font-size:12px!important;letter-spacing:.03em}
+.fellowship-hero-foot b{color:#fa7589;margin:0 6px}
+.fellowship-hero-card{background:white;padding:34px;border-radius:22px;color:#172f53;box-shadow:0 35px 75px #07132670}
+.fellowship-hero-card>span{font-size:10px;letter-spacing:.15em;color:#b62f48;font-weight:850}
+.fellowship-hero-card h2{font-size:26px;line-height:1.2;margin:15px 0 10px;color:#142b4e}
+.fellowship-hero-card p{color:#53677f;font-size:14px;line-height:1.7}
+.circle-flower{width:110px;height:110px;border-radius:50%;margin:20px auto 22px;background:linear-gradient(140deg,#0855a5,#092b6a);display:flex;align-items:center;justify-content:center;font-weight:850;font-size:65px;color:#fff}
+.circle-flower span{font-family:"Brush Script MT",cursive;font-size:20px;color:#ff6476;margin-left:-12px;margin-top:18px}
+.fellowship-hero-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:17px}
+.fellowship-hero-tags span{font-size:11px;padding:6px 9px;border-radius:18px;background:#edf4ff;color:#194c8b}
+.fellowship-section{padding-top:76px;padding-bottom:77px}
+.fellowship-section>h2,.fellowship-impact h2{font-size:clamp(1.8rem,3.2vw,2.6rem);line-height:1.19;max-width:780px;margin:13px 0 32px}
+.mission-layout{display:grid;grid-template-columns:1.3fr .7fr;gap:48px}
+.mission-layout p{font-size:16px}
+.fellowship-quote{background:#edf3fe;border-left:4px solid #dc3348;border-radius:15px;padding:35px}
+.fellowship-quote span{color:#cb354b;font-weight:800;letter-spacing:.12em;font-size:12px}
+.fellowship-quote h3{font-size:27px;line-height:1.28;margin:18px 0;color:#103663}
+.fellowship-journey-bg{background:#f3f6fb}
+.journey-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:21px}
+.journey-steps article{background:#fff;padding:30px;border:1px solid #e4eaf4;border-radius:16px}
+.step-number{font-weight:900;font-size:37px;color:#d7374b;margin-bottom:22px}
+.journey-steps article>span{font-size:11px;font-weight:850;color:#1761ad;letter-spacing:.09em}
+.journey-steps h3{font-size:22px;margin:12px 0}
+.journey-steps p{font-size:14px}
+.week-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}
+.week-grid article{background:#f8faff;border:1px solid #e4eaf4;border-radius:15px;padding:24px}
+.week-grid strong{color:#d62e47;font-size:12px;letter-spacing:.05em}
+.week-grid h3{font-size:19px;margin:15px 0}
+.week-grid p{font-size:14px}
+.fellowship-impact{background:#092c60;padding:70px 0;color:white}
+.fellowship-impact-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:55px;align-items:center}
+.fellowship-impact h2{color:white}
+.fellowship-impact .eyebrow{color:#ffb0bb}
+.fellowship-impact p{color:#cbdcf3}
+.impact-cards{display:grid;gap:12px}
+.impact-cards>div{padding:23px;border:1px solid #ffffff36;background:#ffffff13;border-radius:14px}
+.impact-cards strong,.impact-cards span{display:block}
+.impact-cards strong{margin-bottom:8px;color:#fff}
+.impact-cards span{font-size:13px;color:#cddbf0}
+.fellowship-footer-cta{max-width:830px;text-align:center}
+.fellowship-footer-cta h2{margin:15px auto}
+.fellowship-footer-cta .hero-actions{justify-content:center}
+.fellowship-footer-cta .dark{background:#fff;color:#0e4c8d;border:1px solid #9bb5d3}
+.fellowship-inner{padding-top:65px!important}
+.fellowship-inner .lead{font-size:17px;max-width:800px}
+.application-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:35px 0}
+.application-steps .panel{padding:28px}
+.application-step-num{font-weight:900;color:#db364a;font-size:31px}
+.application-steps h3{margin-top:12px}
+.application-callout{background:#edf4ff}
+.fellowship-state{background:#eaf2ff;border-radius:25px;color:#0b4b92;font-size:12px;font-weight:800;padding:11px 17px}
+.fellow-dashboard-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:23px 0 29px}
+.fellow-dashboard-stats>div{padding:23px;background:#fff;border:1px solid #e2eaf4;border-radius:13px}
+.fellow-dashboard-stats span{display:block;color:#67778d;font-size:12px;margin-bottom:11px}
+.fellow-dashboard-stats strong{font-size:20px;color:#113a70;line-height:1.25}
+.fellow-stages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:24px 0}
+.fellow-stages h2{margin:14px 0;font-size:24px}
+.fellow-progress{height:10px;background:#dbe5f4;overflow:hidden;border-radius:12px}
+.fellow-progress>div{height:100%;background:#0b63b0;border-radius:12px}
+.project-panel,.graduation-panel,.admin-section{margin:26px 0}
+.graduation-panel{border:1px solid #79bba1;background:#f2fcf8}
+.cohort-row{display:flex;gap:18px;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #edf0f5}
+.cohort-row select{max-width:210px}
+.cohort-row small{display:block;color:#7c8899;margin-top:5px}
+.project-review{padding:23px 0;border-top:1px solid #e7eaf0}
+.project-review p{white-space:pre-wrap}
+.review-actions{display:flex;flex-wrap:wrap;align-items:end;gap:15px}
+.review-actions label{max-width:190px}
+.invite-result{padding:20px;background:#ecf6fe;border:1px solid #aacce9;border-radius:13px;margin:20px 0}
+.invite-result strong{display:block;font-size:23px;color:#123f83;margin:15px 0;letter-spacing:.04em}
+@media(max-width:850px){.fellowship-hero-grid,.mission-layout,.fellowship-impact-grid{grid-template-columns:1fr}.fellowship-hero-card{max-width:600px}.journey-steps{grid-template-columns:1fr}.week-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.fellowship-hero{padding:55px 0}.fellowship-section{padding-top:55px;padding-bottom:56px}.week-grid,.application-steps,.fellow-stages,.fellow-dashboard-stats{grid-template-columns:1fr}.fellowship-hero-grid{gap:29px}.fellowship-hero-card{padding:26px}.nav>div{row-gap:10px}.review-actions{flex-direction:column;align-items:flex-start}}
