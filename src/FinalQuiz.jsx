@@ -39,8 +39,8 @@ export default function FinalQuiz({user,profile}){
     pdf.setFillColor(251,250,247);pdf.rect(0,0,W,H,'F');
     pdf.setDrawColor(23,55,68);pdf.setLineWidth(1.8);pdf.rect(9,9,W-18,H-18);
     pdf.setDrawColor(230,119,35);pdf.setLineWidth(.8);pdf.rect(13,13,W-26,H-26);
-    pdf.setTextColor(20,46,61);pdf.setFont('times','bold');pdf.setFontSize(21);
-    pdf.text('HELIONS BUSINESS SCHOOL',W/2,39,{align:'center'});
+    pdf.setTextColor(20,46,61);pdf.setFont('times','bold');pdf.setFontSize(17);
+    pdf.text('MARI MATTERS FINANCIAL LITERACY ACADEMY',W/2,39,{align:'center'});
     pdf.setDrawColor(230,119,35);pdf.setLineWidth(.7);pdf.line(92,46,205,46);
     pdf.setFont('times','bold');pdf.setFontSize(30);pdf.text('CERTIFICATE OF COMPLETION',W/2,72,{align:'center'});
     pdf.setFont('times','normal');pdf.setFontSize(15);pdf.text('This is to certify that',W/2,88,{align:'center'});
@@ -57,13 +57,13 @@ export default function FinalQuiz({user,profile}){
     pdf.text('Issued: '+date,35,170);pdf.text('Assessment score: '+certificate.score+'%',W/2,170,{align:'center'});
     pdf.text('Certificate No: '+certificate.certificate_number,W-35,170,{align:'right'});
     pdf.setFontSize(9);pdf.setTextColor(100,111,115);
-    pdf.text('Issued electronically by Helions Business School - Certificate of course completion, not a regulated qualification',W/2,183,{align:'center'});
-    pdf.save('Helions-Financial-Literacy-Certificate-'+certificate.certificate_number+'.pdf');
+    pdf.text('Issued electronically by Mari Matters Financial Literacy Academy - Certificate of course completion, not a regulated qualification',W/2,183,{align:'center'});
+    pdf.save('Mari-Matters-Financial-Literacy-Certificate-'+certificate.certificate_number+'.pdf');
   }catch(e){setError('Unable to generate certificate PDF: '+errorText(e))}finally{setPdfBusy(false)}
  }
  return <main className="wrap">
   <Link to={'/learn/'+id}>← Back to course lessons</Link>
-  <span className="eyebrow" style={{display:'block',marginTop:20}}>Helions Business School · Final assessment</span>
+  <span className="eyebrow" style={{display:'block',marginTop:20}}>Mari Matters Financial Literacy Academy · Final assessment</span>
   <h1>Financial Literacy Quiz</h1>
   <p>Answer ten practical questions about household budgets, mukando, borrowing, business money and safe payments. You need at least 70% to pass, and you may retry if necessary. Complete every lesson before submitting.</p>
   {error&&<p className="notice">{error}</p>}
