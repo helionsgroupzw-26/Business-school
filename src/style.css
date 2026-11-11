@@ -157,3 +157,11 @@ footer small{color:#8eaacc}
 .invite-result strong{display:block;font-size:23px;color:#123f83;margin:15px 0;letter-spacing:.04em}
 @media(max-width:850px){.fellowship-hero-grid,.mission-layout,.fellowship-impact-grid{grid-template-columns:1fr}.fellowship-hero-card{max-width:600px}.journey-steps{grid-template-columns:1fr}.week-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.fellowship-hero{padding:55px 0}.fellowship-section{padding-top:55px;padding-bottom:56px}.week-grid,.application-steps,.fellow-stages,.fellow-dashboard-stats{grid-template-columns:1fr}.fellowship-hero-grid{gap:29px}.fellowship-hero-card{padding:26px}.nav>div{row-gap:10px}.review-actions{flex-direction:column;align-items:flex-start}}
+
+/* Readable long-form fellowship study content */
+.fellow-reading{font-size:15.5px;color:#334558;line-height:1.85;overflow-wrap:anywhere}
+.fellow-reading p{font-size:inherit;line-height:1.85;margin:0 0 18px;color:#334558}
+.fellow-reading a{color:#0b59a7;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.fellow-reading .reading-subhead{font-size:15.5px;line-height:1.45;color:#0b3b75;letter-spacing:.06em;font-weight:850;margin:31px 0 12px;padding:12px 14px 12px 16px;background:#f1f6ff;border-left:3px solid #d63b52;border-radius:0 7px 7px 0}
+.lessoncontent{min-width:0}.lessoncontent h2{line-height:1.35}
+@media(max-width:650px){.fellow-reading{font-size:15px}.fellow-reading .reading-subhead{font-size:14px}}
