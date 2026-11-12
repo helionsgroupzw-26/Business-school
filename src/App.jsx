@@ -13,6 +13,35 @@ function App(){
 }
 function Guard({session,profile,admin,children}){if(session===undefined||profile===undefined)return <main className="wrap">Loading...</main>;if(!session)return <Navigate to="/login" replace/>;if(admin&&profile.role!=='admin')return <main className="wrap"><h2>Administrator access required</h2><p>Your account does not have administrator permissions.</p></main>;return children}
 function Notice({message}){return message&&<p className="notice">{message}</p>}
+
+function embeddedYouTubeUrl(link){
+ try{
+  const parsed=new URL(link);
+  const host=parsed.hostname.toLowerCase();
+  let id='';
+  if(host==='youtu.be'||host==='www.youtu.be')id=parsed.pathname.split('/')[1]||'';
+  else if(['youtube.com','www.youtube.com','m.youtube.com','www.youtube-nocookie.com'].includes(host)){
+   if(parsed.pathname==='/watch')id=parsed.searchParams.get('v')||'';
+   else if(/^\/(embed|shorts|live)\//.test(parsed.pathname))id=parsed.pathname.split('/')[2]||'';
+  }
+  return /^[a-zA-Z0-9_-]{11}$/.test(id)?'https://www.youtube-nocookie.com/embed/'+id+'?rel=0&playsinline=1':null;
+ }catch{return null}
+}
+function LessonVideo({url,title}){
+ const embedUrl=embeddedYouTubeUrl(url);
+ const [play,setPlay]=useState(false);
+ useEffect(()=>setPlay(false),[url]);
+ if(!url)return null;
+ return <section className="lesson-video-section" aria-label="Watch and learn video">
+   <div className="video-heading"><span className="video-heading-icon">▶</span><div><h3>Watch & Learn</h3><p>A short supporting video to help explain the concept in this unit.</p></div></div>
+   {embedUrl?<div className="video-frame">
+     {play?<iframe key={embedUrl} src={embedUrl} title={'Video lesson: '+title} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen/>:<button className="video-launch" type="button" onClick={()=>setPlay(true)} aria-label={'Play supporting video: '+title}><span className="video-play-icon">▶</span><strong>Play video in this lesson</strong><small>Uses YouTube's embedded player. Internet connection required.</small></button>}
+    </div>:<p>This video cannot be embedded automatically. <a href={url} target="_blank" rel="noopener noreferrer">Open the video source</a>.</p>}
+   <p className="video-disclaimer">This is an independently produced video used as optional learning support. Some examples may be from outside Zimbabwe; apply the principles to your local circumstances.</p>
+   <p className="video-fallback">If the video owner restricts embedding or your browser blocks playback, <a href={url} target="_blank" rel="noopener noreferrer">open it on YouTube</a>.</p>
+  </section>
+}
+
 function ReadableLesson({content}){if(!content)return null;const blocks=content.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);return <div className="fellow-reading">{blocks.map((block,i)=>{const head=block.length<125&&block===block.toUpperCase()&&/[A-Z]/.test(block)&&!/^HTTPS?:/.test(block);if(head)return <h3 className="reading-subhead" key={i}>{block}</h3>;const parts=block.split(/(https?:\/\/[^\s]+)/g);return <p key={i}>{parts.map((part,j)=>/^https?:\/\//.test(part)?<a key={j} href={part} target="_blank" rel="noopener noreferrer">{part.replace(/^https?:\/\//,'').replace(/^www\./,'')}</a>:<React.Fragment key={j}>{part}</React.Fragment>)}</p>})}</div>}
 
 function useRows(table,filters=[],sort){const [rows,setRows]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState('');async function reload(){if(!supabase){setLoading(false);return}setLoading(true);let q=supabase.from(table).select('*');for(const [column,value] of filters)q=q.eq(column,value);if(sort)q=q.order(sort);const {data,error}=await q;if(error)setError(errorText(error));else{setRows(data||[]);setError('')}setLoading(false)}useEffect(()=>{reload()},[table,JSON.stringify(filters),sort]);return {rows,loading,error,reload}}
@@ -81,7 +110,7 @@ function Learning({user}){
    </aside>
    <section className="panel lessoncontent" id="fellowship-lesson">
     {active?<><span className="eyebrow">{readingFinished?'Previously completed unit':'Unit '+(lessons.findIndex(l=>l.id===active.id)+1)+' of '+lessons.length}</span><h2>{active.title}</h2><p>{active.summary}</p><ReadableLesson content={active.content}/>
-    {active.video_url&&<p><a href={active.video_url} target="_blank" rel="noreferrer">Watch the supporting video ↗</a></p>}
+    <LessonVideo key={active.id} url={active.video_url} title={active.title}/>
     {active.file_path&&<><button onClick={download}>Get study material</button>{url&&<p><a href={url} target="_blank" rel="noreferrer">Open study file ↗</a></p>}</>}
     <div className="lesson-next-actions">
      {readingFinished?<><p>✓ You have already completed this unit. You can review it whenever you need to.</p>{pending.length>0?<button onClick={()=>openLesson(pending[0].id)}>Continue with next unfinished unit →</button>:<Link className="btn" to="/fellowship">Back to fellowship dashboard →</Link>}</>:
