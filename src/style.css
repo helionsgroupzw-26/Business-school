@@ -194,3 +194,20 @@ footer small{color:#8eaacc}
  .fellowship-sidebar .lesson{font-size:14px}
  .lesson-next-actions button{width:100%}
 }
+
+/* Responsive, in-lesson YouTube player */
+.lesson-video-section{margin:34px 0 28px;padding:20px;border:1px solid #dbe5f3;border-radius:15px;background:#f4f8ff}
+.video-heading{display:flex;gap:13px;align-items:start;margin-bottom:16px}
+.video-heading-icon{display:grid;place-items:center;width:38px;height:38px;flex-shrink:0;border-radius:11px;background:#d63850;color:white;font-size:16px}
+.video-heading h3{margin:0 0 5px;color:#0e3566;font-size:20px}
+.video-heading p{font-size:13px;margin:0;color:#526987}
+.video-frame{position:relative;aspect-ratio:16/9;width:100%;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#071a3b,#114b88);box-shadow:0 9px 22px #0b235526}
+.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-launch{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;width:100%;height:100%;padding:22px;border-radius:0;background:transparent;color:white;text-align:center}
+.video-launch:hover{background:#ffffff12}
+.video-launch .video-play-icon{background:#e52f49;padding:16px 22px;border-radius:14px;box-shadow:0 7px 20px #0003}
+.video-launch strong{font-size:17px}
+.video-launch small{font-size:12px;color:#cbd9ed}
+.video-disclaimer,.video-fallback{font-size:12px!important;line-height:1.6!important;margin:12px 0 0!important;color:#5a6d85!important}
+.video-fallback a{color:#165eaa;text-decoration:underline}
+@media(max-width:650px){.lesson-video-section{margin:22px -5px;padding:13px}.video-launch{gap:8px}.video-launch strong{font-size:14px}.video-launch small{font-size:11px}}
