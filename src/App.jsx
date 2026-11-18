@@ -3,6 +3,7 @@ import {Link,NavLink,Navigate,Routes,Route,useNavigate,useParams} from 'react-ro
 import {supabase,configured,errorText} from './supabase';
 import FinalQuiz from './FinalQuiz.jsx';
 import LessonPractice from './LessonPractice.jsx';
+import {WeeklyQuiz,ExternalFinalAssessment} from './FellowshipQuizzes.jsx';
 import FellowshipPortal,{FellowshipHome,FellowshipApplication,FellowshipAdmin,FellowshipInviteActivate} from './FellowshipPortal.jsx';
 const emptyCourse={title:'',description:'',category:'Money & Budgeting',level:'Beginner',duration:'',published:false};
 function App(){
@@ -60,75 +61,92 @@ function Auth({user}){const [name,setName]=useState(''),[email,setEmail]=useStat
 function Dashboard({user}){const {rows:enrollments,error}=useRows('enrollments',[['user_id',user.id]]);const {rows:courses}=useRows('courses');return <main className="wrap"><span className="eyebrow">Your Mari Matters journey</span><h1>My Learning</h1><p>Welcome to your learning space. Pick up where you left off and keep building practical money skills.</p><Notice message={error}/><div className="grid">{enrollments.map(e=>{const c=courses.find(c=>c.id===e.course_id);return c&&<article className="card pad" key={e.id}><h3>{c.title}</h3><p>{c.category}</p><Link className="btn" to={'/learn/'+c.id}>Continue learning →</Link></article>})}</div>{!enrollments.length&&<div className="empty">You haven't enrolled in any courses. <Link to="/courses">Explore courses</Link></div>}</main>}
 function Learning({user}){
  const {id}=useParams();
+ const fellowship=id==='4617f7ff-344c-43d3-af2b-9d1a9afb005e';
  const {rows:enrollments,loading:enrollmentLoading}=useRows('enrollments',[['course_id',id],['user_id',user.id]]);
  const {rows:courses}=useRows('courses',[['id',id]]);
  const {rows:lessons,loading:lessonsLoading}=useRows('lessons',[['course_id',id]],'position');
- const {rows:progress,loading:progressLoading,reload}=useRows('lesson_progress',[['user_id',user.id]]);
+ const {rows:progress,loading:progressLoading,reload:reloadProgress}=useRows('lesson_progress',[['user_id',user.id]]);
+ const {rows:attempts,loading:attemptsLoading,reload:reloadAttempts}=useRows('fellowship_quiz_attempts',[['user_id',user.id],['course_id',id]]);
  const [selected,setSelected]=useState(null),[url,setUrl]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  const completedIds=new Set(progress.map(p=>p.lesson_id));
+ const passedWeeks=new Set(attempts.filter(a=>a.passed).map(a=>a.week));
+ const weekOpen=w=>!fellowship||w===1||passedWeeks.has(w-1);
+ const lessonOpen=l=>weekOpen(Math.ceil(l.position/3));
  const pending=lessons.filter(l=>!completedIds.has(l.id));
  const current=lessons.find(l=>l.id===selected);
- const active=current||pending[0]||null;
+ const active=(current&&lessonOpen(current)?current:null)||pending.find(lessonOpen)||lessons.find(lessonOpen)||null;
  const completeCount=lessons.filter(l=>completedIds.has(l.id)).length;
  const allFinished=lessons.length>0&&completeCount===lessons.length;
  const readingFinished=active&&completedIds.has(active.id);
- const next=active?lessons.find(l=>l.position>active.position&&!completedIds.has(l.id)):null;
+ const next=active?pending.find(l=>l.position>active.position&&lessonOpen(l)):null;
  useEffect(()=>{setUrl('')},[active?.id]);
- function openLesson(lessonId){setError('');setSelected(lessonId);window.scrollTo({top:0,behavior:'smooth'})}
+ function openLesson(lessonId){const lesson=lessons.find(l=>l.id===lessonId);if(!lesson||!lessonOpen(lesson))return;setError('');setSelected(lessonId);window.scrollTo({top:0,behavior:'smooth'})}
  async function completeAndContinue(){
   if(!active||completedIds.has(active.id)||busy)return;
   setBusy(true);setError('');
-  const nextLesson=lessons.find(l=>l.position>active.position&&!completedIds.has(l.id))||lessons.find(l=>l.id!==active.id&&!completedIds.has(l.id));
+  const currentWeek=Math.ceil(active.position/3);
+  const nextLesson=lessons.find(l=>l.position>active.position&&!completedIds.has(l.id)&&lessonOpen(l));
   const {error:saveError}=await supabase.from('lesson_progress').insert({user_id:user.id,lesson_id:active.id});
   if(saveError){setError(errorText(saveError));setBusy(false);return}
-  setSelected(nextLesson?.id||null);
-  await reload();
-  setBusy(false);
-  window.scrollTo({top:0,behavior:'smooth'});
+  await reloadProgress();setBusy(false);
+  if(nextLesson){setSelected(nextLesson.id);window.scrollTo({top:0,behavior:'smooth'})}
+  else if(fellowship&&!passedWeeks.has(currentWeek)){
+   setSelected(active.id);
+   window.setTimeout(()=>document.getElementById('week-'+currentWeek+'-quiz')?.scrollIntoView({behavior:'smooth',block:'start'}),150);
+  }else{setSelected(null);window.scrollTo({top:0,behavior:'smooth'})}
  }
  async function download(){
   if(!active?.file_path)return;
   const {data,error:downloadError}=await supabase.storage.from('lesson-materials').createSignedUrl(active.file_path,90);
   if(downloadError)setError(errorText(downloadError));else setUrl(data.signedUrl);
  }
- if(enrollmentLoading||lessonsLoading||progressLoading)return <main className="wrap"><p>Preparing your learning units...</p></main>;
+ if(enrollmentLoading||lessonsLoading||progressLoading||attemptsLoading)return <main className="wrap"><p>Preparing your learning units and weekly assessments...</p></main>;
  if(!enrollments.length)return <main className="wrap"><h2>Fellowship access required</h2><p>This learning pathway is reserved for accepted fellows who have activated their cohort code.</p><Link to="/fellowship">My Fellowship</Link></main>;
- const fellowship=id==='4617f7ff-344c-43d3-af2b-9d1a9afb005e';
  return <main className="wrap">
   <Link to="/fellowship">← Fellowship dashboard</Link>
   <h1>{fellowship?'My Fellowship Learning Units':courses[0]?.title||'Your learning pathway'}</h1>
-  <p>{completeCount} of {lessons.length} units completed. Select a unit from the side panel, study the material and use the button at the bottom to continue.</p>
+  <p>{completeCount} of {lessons.length} units completed. {fellowship?'Finish the three lessons and pass the 10-question quiz (70%) to unlock the next week. Retake any quiz until you pass.':'Select a unit from the side panel and complete it to continue.'}</p>
   <div className="fellow-progress" role="progressbar" aria-label="Learning completion" aria-valuenow={completeCount} aria-valuemin="0" aria-valuemax={lessons.length||1}><div style={{width:(lessons.length?100*completeCount/lessons.length:0)+'%'}}/></div>
   <div className="learning fellowship-reader">
    <aside className="panel fellowship-sidebar">
     <h3>Learning units</h3>
-    <p className="sidebar-hint">Choose an unfinished unit. Completed units are stored separately below.</p>
-    {pending.map((l)=>{
-      const index=lessons.findIndex(item=>item.id===l.id);
-      const week=Math.floor(index/3)+1;
-      const previousPending=pending[pending.indexOf(l)-1];
-      return <React.Fragment key={l.id}>
-       {(!previousPending||Math.ceil(previousPending.position/3)!==week)&&<div className="sidebar-week">WEEK {week}</div>}
-       <button type="button" className={'lesson '+(active?.id===l.id?'selected':'')} aria-current={active?.id===l.id?'step':undefined} onClick={()=>openLesson(l.id)}><span className="lesson-state">○</span><span>{l.title.replace(/^Week \d+\s*·\s*Lesson \d+\s*[—–-]\s*/i,'')}</span></button>
-      </React.Fragment>;
-    })}
-    {!pending.length&&<p className="sidebar-finished">✓ All units completed</p>}
-    {completeCount>0&&<details className="completed-units"><summary>✓ Completed units ({completeCount})</summary>{lessons.filter(l=>completedIds.has(l.id)).map(l=><button type="button" key={l.id} className={'lesson completed-lesson '+(active?.id===l.id?'selected':'')} onClick={()=>openLesson(l.id)}>✓ {l.title.replace(/^Week \d+\s*·\s*Lesson \d+\s*[—–-]\s*/i,'')}</button>)}</details>}
+    <p className="sidebar-hint">{fellowship?'Each week unlocks after you pass the previous week’s quiz. Completed lessons remain available for review.':'Choose an unfinished unit. Completed units are available for review below.'}</p>
+    {fellowship?Array.from({length:4},(_,wi)=>wi+1).map(week=>{
+      const weekLessons=lessons.filter(l=>Math.ceil(l.position/3)===week);
+      const locked=!weekOpen(week);
+      const completed=weekLessons.filter(l=>completedIds.has(l.id)).length;
+      return <div key={week} className="sidebar-week-group">
+       <div className="sidebar-week">WEEK {week} {passedWeeks.has(week)?'· ✓ PASSED':locked?'· 🔒 LOCKED':''}</div>
+       {weekLessons.map(l=><button type="button" key={l.id} disabled={locked} className={'lesson '+(active?.id===l.id?'selected ':'')+(completedIds.has(l.id)?'completed-lesson':'')} aria-current={active?.id===l.id?'step':undefined} onClick={()=>openLesson(l.id)}><span className="lesson-state">{locked?'🔒':completedIds.has(l.id)?'✓':'○'}</span><span>{l.title.replace(/^Week \d+\s*·\s*Lesson \d+\s*[—–-]\s*/i,'')}</span></button>)}
+       <a className={'sidebar-quiz-link '+(locked?'locked':'')} href={'#week-'+week+'-quiz'}>Week {week} quiz · {passedWeeks.has(week)?'Passed':completed===3?'Ready':'10 questions'}</a>
+      </div>
+    }):<>{pending.map(l=><button type="button" key={l.id} className={'lesson '+(active?.id===l.id?'selected':'')} onClick={()=>openLesson(l.id)}>{l.title}</button>)}{completeCount>0&&<details className="completed-units"><summary>✓ Completed units ({completeCount})</summary>{lessons.filter(l=>completedIds.has(l.id)).map(l=><button type="button" key={l.id} className="lesson completed-lesson" onClick={()=>openLesson(l.id)}>✓ {l.title}</button>)}</details>}</>}
    </aside>
    <section className="panel lessoncontent" id="fellowship-lesson">
-    {active?<><span className="eyebrow">{readingFinished?'Previously completed unit':'Unit '+(lessons.findIndex(l=>l.id===active.id)+1)+' of '+lessons.length}</span><h2>{active.title}</h2><p>{active.summary}</p><LessonVideo key={active.id} url={active.video_url} title={active.title} position={active.position}/>
+    {active?<><span className="eyebrow">{readingFinished?'Previously completed unit':'Unit '+active.position+' of '+lessons.length}</span><h2>{active.title}</h2><p>{active.summary}</p>
+    <LessonVideo key={active.id} url={active.video_url} title={active.title} position={active.position}/>
     <ReadableLesson content={active.content}/>
-    {id==='4617f7ff-344c-43d3-af2b-9d1a9afb005e'&&<LessonPractice key={active.id} position={active.position}/>}
+    {fellowship&&<LessonPractice key={active.id} position={active.position}/>}
     {active.file_path&&<><button onClick={download}>Get study material</button>{url&&<p><a href={url} target="_blank" rel="noreferrer">Open study file ↗</a></p>}</>}
     <div className="lesson-next-actions">
-     {readingFinished?<><p>✓ You have already completed this unit. You can review it whenever you need to.</p>{pending.length>0?<button onClick={()=>openLesson(pending[0].id)}>Continue with next unfinished unit →</button>:<Link className="btn" to="/fellowship">Back to fellowship dashboard →</Link>}</>:
-     <><p>Finished reading and working through this unit? Mark it as complete and continue with the next unfinished unit.</p><button disabled={busy} onClick={completeAndContinue}>{busy?'Saving progress...':next?'✓ Complete & open next lesson →':'✓ Complete & continue →'}</button></>}
+     {readingFinished?<><p>✓ You have completed this unit. You may review it whenever you need to.</p>{pending.some(lessonOpen)?<button type="button" onClick={()=>openLesson(pending.find(lessonOpen).id)}>Continue with next unfinished unit →</button>:fellowship&&!passedWeeks.has(Math.ceil(active.position/3))?<a className="btn" href={'#week-'+Math.ceil(active.position/3)+'-quiz'}>Go to Week {Math.ceil(active.position/3)} quiz ↓</a>:<Link className="btn" to="/fellowship">Return to fellowship dashboard →</Link>}</>:
+     <><p>Finished the video, reading and practical exercises? Mark this unit complete. After your third lesson in each week, take its automatic quiz.</p><button disabled={busy} onClick={completeAndContinue}>{busy?'Saving progress...':next?'✓ Complete & next lesson →':fellowship?'✓ Complete & continue to weekly quiz →':'✓ Complete lesson →'}</button></>}
      {error&&<p className="notice">{error}</p>}
     </div>
-    </>:allFinished?<div className="learning-done"><h2>You've completed all twelve learning units!</h2><p>Well done on finishing the online reading pathway. Weekly quizzes, community projects and graduation assessments are handled by your Mari Matters coordinator outside this portal.</p><Link className="btn" to="/fellowship">Return to my fellowship dashboard →</Link></div>:<p>There are no lessons available yet.</p>}
+    </>:allFinished?<div className="learning-done"><h2>All twelve lessons completed!</h2><p>Review your weekly quiz results below, then follow the external final-test and community project instructions.</p></div>:<div className="learning-done"><h2>Next week is locked</h2><p>Pass the previous week’s quiz with at least 70% to continue.</p></div>}
    </section>
   </div>
-  {fellowship&&<section className="panel" style={{marginTop:24}}><h2>Weekly quizzes and community project</h2><p>At the end of each week, your cohort coordinator shares a short knowledge quiz through your separate communication group. After the four weeks, project instructions and submissions are also handled outside this learning portal.</p></section>}
+  {fellowship&&<div id="weekly-assessments" className="weekly-assessments">
+    <div className="weekly-assessments-head"><span className="eyebrow">ASSESS YOUR LEARNING</span><h2>Weekly knowledge checks</h2><p>Each week contains ten single-answer multiple-choice questions. Your score is marked and saved automatically. Achieve at least 7/10 to unlock the next week; retakes are unlimited.</p></div>
+    {Array.from({length:4},(_,i)=>i+1).map(week=><WeeklyQuiz key={week} week={week} courseId={id}
+      lessonsDone={lessons.filter(l=>Math.ceil(l.position/3)===week&&completedIds.has(l.id)).length}
+      priorPassed={week===1||passedWeeks.has(week-1)}
+      passed={passedWeeks.has(week)}
+      attempts={attempts.filter(a=>a.week===week)}
+      onPassed={reloadAttempts}/>)}
+    <ExternalFinalAssessment courseId={id} passedAll={[1,2,3,4].every(w=>passedWeeks.has(w))}/>
+   </div>}
+  {fellowship&&<section className="panel" style={{marginTop:24}}><h2>Community leadership project</h2><p>The project proposal, evidence, final report and graduation decisions will continue to be managed separately by the Mari Matters team. Completing weekly quizzes is a learning requirement but does not automatically grant fellowship graduation.</p></section>}
  </main>
 }
 function Admin(){const {rows:courses,reload,error}=useRows('courses');const {rows:profiles}=useRows('profiles');async function remove(id){if(!confirm('Delete this course and all its lessons?'))return;const {error}=await supabase.from('courses').delete().eq('id',id);if(error)alert(errorText(error));else reload()}return <main className="wrap"><div className="heading"><div><span className="eyebrow">Mari Matters Academy administration</span><h1>Academy Management</h1></div><Link className="btn" to="/admin/courses/new">+ Add new course</Link></div><div className="stats"><div><b>{courses.length}</b> Courses</div><div><b>{courses.filter(c=>c.published).length}</b> Published</div><div><b>{profiles.length}</b> Users</div></div><h2>Manage courses</h2><Notice message={error}/><div className="panel">{courses.map(c=><div className="course-row" key={c.id}><div><b>{c.title}</b><small>{c.published?'Published':'Draft'} · {c.category}</small></div><div><Link to={'/admin/courses/'+c.id}>Edit / Lessons</Link><button className="danger small" onClick={()=>remove(c.id)}>Delete</button></div></div>)}{!courses.length&&<p>No courses yet. Create your first course.</p>}</div><h2>Registered students</h2><div className="panel">{profiles.map(p=><div className="course-row" key={p.id}><b>{p.full_name||'Student'}</b><span>{p.role}</span></div>)}</div></main>}
