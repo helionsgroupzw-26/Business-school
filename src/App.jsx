@@ -15,7 +15,7 @@ function App(){
 function Guard({session,profile,admin,children}){if(session===undefined||profile===undefined)return <main className="wrap">Loading...</main>;if(!session)return <Navigate to="/login" replace/>;if(admin&&profile.role!=='admin')return <main className="wrap"><h2>Administrator access required</h2><p>Your account does not have administrator permissions.</p></main>;return children}
 function Notice({message}){return message&&<p className="notice">{message}</p>}
 
-function embeddedYouTubeUrl(link){
+function youtubeVideoId(link){
  try{
   const parsed=new URL(link);
   const host=parsed.hostname.toLowerCase();
@@ -25,25 +25,31 @@ function embeddedYouTubeUrl(link){
    if(parsed.pathname==='/watch')id=parsed.searchParams.get('v')||'';
    else if(/^\/(embed|shorts|live)\//.test(parsed.pathname))id=parsed.pathname.split('/')[2]||'';
   }
-  return /^[a-zA-Z0-9_-]{11}$/.test(id)?'https://www.youtube-nocookie.com/embed/'+id+'?rel=0&playsinline=1':null;
+  return /^[a-zA-Z0-9_-]{11}$/.test(id)?id:null;
  }catch{return null}
 }
-function LessonVideo({url,title}){
- const embedUrl=embeddedYouTubeUrl(url);
- const [play,setPlay]=useState(false);
- useEffect(()=>setPlay(false),[url]);
- if(!url)return null;
- return <section className="lesson-video-section" aria-label="Watch and learn video">
-   <div className="video-heading"><span className="video-heading-icon">▶</span><div><h3>Watch & Learn</h3><p>A short supporting video to help explain the concept in this unit.</p></div></div>
-   {embedUrl?<div className="video-frame">
-     {play?<iframe key={embedUrl} src={embedUrl} title={'Video lesson: '+title} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen/>:<button className="video-launch" type="button" onClick={()=>setPlay(true)} aria-label={'Play supporting video: '+title}><span className="video-play-icon">▶</span><strong>Play video in this lesson</strong><small>Uses YouTube's embedded player. Internet connection required.</small></button>}
-    </div>:<p>This video cannot be embedded automatically. <a href={url} target="_blank" rel="noopener noreferrer">Open the video source</a>.</p>}
-   <p className="video-disclaimer">This is an independently produced video used as optional learning support. Some examples may be from outside Zimbabwe; apply the principles to your local circumstances.</p>
-   <p className="video-fallback">If the video owner restricts embedding or your browser blocks playback, <a href={url} target="_blank" rel="noopener noreferrer">open it on YouTube</a>.</p>
-  </section>
+function LessonVideo({url,title,position}){
+ const [player,setPlayer]=useState('normal');
+ const [started,setStarted]=useState(false);
+ const [playerError,setPlayerError]=useState(false);
+ useEffect(()=>{setPlayer('normal');setStarted(false);setPlayerError(false)},[url]);
+ if(!url)return <section className="lesson-video-section"><strong>Video lesson not available</strong><p>Continue with the written lesson and interactive activities.</p></section>;
+ const id=youtubeVideoId(url);
+ const safeUrl=id?'https://www.youtube.com/watch?v='+id:url;
+ const origin=typeof window!=='undefined'?encodeURIComponent(window.location.origin):'';
+ const embed=id?(player==='normal'?'https://www.youtube.com/embed/':'https://www.youtube-nocookie.com/embed/')+id+'?rel=0&playsinline=1&origin='+origin:null;
+ return <section className="lesson-video-section" aria-label={'Supporting video for lesson '+position}>
+  <div className="video-heading"><span className="video-heading-icon">▶</span><div><h3>Watch & Learn · Unit {position}</h3><p>Supporting video for <strong>{title}</strong></p></div></div>
+  {embed?<div className="video-frame">
+   {started?<iframe key={embed} src={embed} title={'Week '+Math.ceil(position/3)+' unit '+position+' video: '+title} loading="eager" referrerPolicy="strict-origin-when-cross-origin" onError={()=>setPlayerError(true)} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen/>:
+   <button type="button" className="video-launch" onClick={()=>setStarted(true)}><span className="video-play-icon">▶</span><strong>Play Unit {position} video here</strong><small>Tap to start the video without leaving the portal</small></button>}
+  </div>:<p>The saved video address is invalid. Please ask the Mari Matters team to update this lesson.</p>}
+  {playerError&&<p className="notice">The video could not load in this player. Try the alternative player or the YouTube link below.</p>}
+  {id&&<div className="video-controls"><button type="button" className="video-player-toggle" onClick={()=>{setPlayer(v=>v==='normal'?'privacy':'normal');setStarted(true);setPlayerError(false)}}>↻ Try {player==='normal'?'alternative':'standard'} player</button><a href={safeUrl} target="_blank" rel="noopener noreferrer">If blocked, watch on YouTube ↗</a></div>}
+  <p className="video-disclaimer">Some videos are hosted by independent educators. Playback may be restricted by YouTube or a video owner; the reading material and practice activity remain available.</p>
+ </section>
 }
-
-function ReadableLesson({content}){if(!content)return null;const blocks=content.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);return <div className="fellow-reading">{blocks.map((block,i)=>{const head=block.length<125&&block===block.toUpperCase()&&/[A-Z]/.test(block)&&!/^HTTPS?:/.test(block);if(head)return <h3 className="reading-subhead" key={i}>{block}</h3>;const parts=block.split(/(https?:\/\/[^\s]+)/g);return <p key={i}>{parts.map((part,j)=>/^https?:\/\//.test(part)?<a key={j} href={part} target="_blank" rel="noopener noreferrer">{part.replace(/^https?:\/\//,'').replace(/^www\./,'')}</a>:<React.Fragment key={j}>{part}</React.Fragment>)}</p>})}</div>}
+function ReadableLesson({content}){if(!content)return null;const blocks=content.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean).filter(x=>!(/^video:\s*https?:\/\//i.test(x)||(/^(?:LEARNING VIDEO|VIDEO EXPLAINER)$/i.test(x))));return <div className="fellow-reading">{blocks.map((block,i)=>{const head=block.length<125&&block===block.toUpperCase()&&/[A-Z]/.test(block)&&!/^HTTPS?:/.test(block);if(head)return <h3 className="reading-subhead" key={i}>{block}</h3>;const parts=block.split(/(https?:\/\/[^\s]+)/g);return <p key={i}>{parts.map((part,j)=>/^https?:\/\//.test(part)?<a key={j} href={part} target="_blank" rel="noopener noreferrer">{part.replace(/^https?:\/\//,'').replace(/^www\./,'')}</a>:<React.Fragment key={j}>{part}</React.Fragment>)}</p>})}</div>}
 
 function useRows(table,filters=[],sort){const [rows,setRows]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState('');async function reload(){if(!supabase){setLoading(false);return}setLoading(true);let q=supabase.from(table).select('*');for(const [column,value] of filters)q=q.eq(column,value);if(sort)q=q.order(sort);const {data,error}=await q;if(error)setError(errorText(error));else{setRows(data||[]);setError('')}setLoading(false)}useEffect(()=>{reload()},[table,JSON.stringify(filters),sort]);return {rows,loading,error,reload}}
 function Home(){return <FellowshipHome/>}
@@ -110,8 +116,8 @@ function Learning({user}){
     {completeCount>0&&<details className="completed-units"><summary>✓ Completed units ({completeCount})</summary>{lessons.filter(l=>completedIds.has(l.id)).map(l=><button type="button" key={l.id} className={'lesson completed-lesson '+(active?.id===l.id?'selected':'')} onClick={()=>openLesson(l.id)}>✓ {l.title.replace(/^Week \d+\s*·\s*Lesson \d+\s*[—–-]\s*/i,'')}</button>)}</details>}
    </aside>
    <section className="panel lessoncontent" id="fellowship-lesson">
-    {active?<><span className="eyebrow">{readingFinished?'Previously completed unit':'Unit '+(lessons.findIndex(l=>l.id===active.id)+1)+' of '+lessons.length}</span><h2>{active.title}</h2><p>{active.summary}</p><ReadableLesson content={active.content}/>
-    <LessonVideo key={active.id} url={active.video_url} title={active.title}/>
+    {active?<><span className="eyebrow">{readingFinished?'Previously completed unit':'Unit '+(lessons.findIndex(l=>l.id===active.id)+1)+' of '+lessons.length}</span><h2>{active.title}</h2><p>{active.summary}</p><LessonVideo key={active.id} url={active.video_url} title={active.title} position={active.position}/>
+    <ReadableLesson content={active.content}/>
     {id==='4617f7ff-344c-43d3-af2b-9d1a9afb005e'&&<LessonPractice key={active.id} position={active.position}/>}
     {active.file_path&&<><button onClick={download}>Get study material</button>{url&&<p><a href={url} target="_blank" rel="noreferrer">Open study file ↗</a></p>}</>}
     <div className="lesson-next-actions">
