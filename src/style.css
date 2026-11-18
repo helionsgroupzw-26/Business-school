@@ -391,3 +391,52 @@ header .nav{max-width:1250px;min-height:84px}
 .video-controls a{font-size:13px;font-weight:700;color:#0a559e;text-decoration:underline;text-underline-offset:2px}
 .lesson-video-section .video-heading strong{color:#173b71}
 @media(max-width:650px){.video-controls{align-items:stretch}.video-controls>*{width:100%;text-align:center}}
+
+/* Mari Matters Fellowship · scored weekly assessment experience */
+.weekly-assessments{max-width:1040px;margin:42px auto}
+.weekly-assessments-head{margin:0 0 24px}.weekly-assessments-head h2{color:#0a3473;font-size:clamp(26px,3.7vw,38px);margin:5px 0 10px}
+.weekly-assessments-head p{color:#53677e;line-height:1.7}
+.weekly-quiz-card{scroll-margin-top:120px;margin:17px 0;padding:26px;background:#fff;border:1px solid #cfdded;border-radius:20px;box-shadow:0 8px 27px #0a35630c}
+.weekly-quiz-card.quiz-passed{border-color:#8dc9ac}.weekly-quiz-card.quiz-locked{background:#f8faff}
+.quiz-card-head{display:flex;align-items:start;justify-content:space-between;gap:18px}
+.quiz-card-head h3,.final-assessment-card h3{font-size:23px;color:#0b3976;margin:7px 0}
+.quiz-card-head p,.final-assessment-card p{color:#576e89;font-size:14px;line-height:1.7;margin:8px 0}
+.quiz-eyebrow{color:#e32747;font-weight:900;letter-spacing:.08em;font-size:11px}
+.quiz-status{white-space:nowrap;flex-shrink:0;font-size:12px;font-weight:850;border-radius:30px;padding:9px 13px}
+.status-pass{color:#167148;background:#dcf7e9}.status-ready{color:#a13b12;background:#fff0de}.status-locked{color:#64748a;background:#e8edf5}
+.quiz-history,.quiz-unlock-note{font-size:13px;color:#5a6980;background:#f2f7ff;border-radius:11px;padding:13px 15px;margin:18px 0 0!important}
+.quiz-open-actions{display:flex;flex-wrap:wrap;gap:15px;align-items:center;margin-top:18px}
+.quiz-start-btn,.quiz-submit-bar button,.quiz-results>button{background:#e52b48;color:white;border-radius:11px;border:0;font-size:14px;font-weight:850;padding:13px 19px}
+.quiz-start-btn:hover,.quiz-submit-bar button:hover:not(:disabled),.quiz-results>button:hover{background:#c31e3a}
+.quiz-pass-hint{font-size:13px;font-weight:750;color:#27724e}
+.quiz-form{margin-top:26px}
+.quiz-question{border:0;border-bottom:1px solid #e0e9f4;padding:0 0 25px;margin:0 0 24px;min-width:0}
+.quiz-question legend{display:block;width:100%;font-weight:800;font-size:16px;line-height:1.55;color:#163e70;padding:0 0 13px}
+.quiz-question legend span{display:block;color:#e42f4e;font-size:10px;letter-spacing:.1em;margin-bottom:6px}
+.quiz-options{display:grid;gap:9px}
+.quiz-option{cursor:pointer;display:flex;gap:12px;align-items:center;padding:13px 14px;border:1px solid #d8e5f5;border-radius:10px;background:#f9fbfe;font-size:14px;color:#25466e;transition:background .2s,border-color .2s}
+.quiz-option:hover{background:#ebf4ff}.quiz-option-selected{background:#e8f2ff;border-color:#377ecb}
+.quiz-option input{width:18px;height:18px;flex-shrink:0;accent-color:#0f63bd}
+.quiz-option-letter{display:grid;place-items:center;width:27px;height:27px;background:#e7effb;color:#0b4689;border-radius:8px;flex-shrink:0;font-weight:850;font-size:12px}
+.quiz-submit-bar{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.quiz-submit-bar span{font-size:13px;color:#516786;font-weight:750}.quiz-submit-bar button:disabled{opacity:.5;cursor:not-allowed}
+.quiz-result-hero{border-radius:16px;padding:23px;margin-top:20px;background:#e5f8ed;color:#105b38}
+.quiz-result-hero.quiz-retry{background:#fff0e6;color:#87401a}
+.quiz-result-hero>span{display:block;font-size:11px;letter-spacing:.1em;font-weight:900}
+.quiz-result-hero strong{display:block;font-size:40px;line-height:1.4}
+.quiz-result-hero strong small{font-size:20px}
+.quiz-result-hero p{color:inherit;font-size:14px}
+.quiz-results h4{color:#0c3b77;font-size:18px;margin:25px 0 13px}
+.quiz-review-item{display:flex;gap:13px;border-bottom:1px solid #e4edf7;padding:15px 0}
+.quiz-review-item>span{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;flex-shrink:0;font-weight:900}
+.quiz-review-correct{background:#e1f8ec;color:#197449}.quiz-review-wrong{background:#fff0e8;color:#a34923}
+.quiz-review-item strong{font-size:13px;color:#193f73}.quiz-review-item p{margin:6px 0;color:#5f6d83;font-size:13px;line-height:1.65}
+.quiz-results>button{margin-top:20px}
+.final-assessment-card{background:linear-gradient(130deg,#f3f8ff,#fff)}
+.quiz-final-disclaimer{margin-top:23px!important;font-size:12px!important}
+.sidebar-week-group .sidebar-week{margin-top:18px}
+.fellowship-sidebar .lesson:disabled{opacity:.48;cursor:not-allowed}
+.sidebar-quiz-link{display:block;margin:9px 4px 16px;padding:9px 11px;border:1px solid #d5e3f1;border-radius:9px;background:#f6faff;font-size:12px;font-weight:850;color:#175a9c}
+.sidebar-quiz-link.locked{color:#7e8d9d}
+@media(max-width:640px){.weekly-quiz-card{padding:18px}.quiz-card-head{flex-direction:column;gap:7px}.quiz-submit-bar{flex-direction:column;align-items:stretch}.quiz-submit-bar button{width:100%}.quiz-option{align-items:flex-start}.quiz-option input{margin-top:3px}}
+@media(prefers-reduced-motion:reduce){.quiz-option{transition:none}}
