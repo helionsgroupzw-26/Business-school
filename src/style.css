@@ -381,3 +381,13 @@ header .nav{max-width:1250px;min-height:84px}
 .workbook-download button:hover{background:#c91734;transform:translateY(-2px)}
 @media(max-width:650px){.practice-module{padding:18px}.practice-fields{grid-template-columns:1fr}.workbook-download{flex-direction:column;align-items:stretch}.workbook-download button{width:100%}}
 @media(prefers-reduced-motion:reduce){.practice-choice,.workbook-download button{transition:none!important}}
+
+/* Repair: video lesson ordering and playback controls */
+.lesson-video-section{margin:22px 0 26px}
+.lesson-video-section .video-heading p{line-height:1.5;max-width:540px}
+.video-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:13px 0 3px}
+.video-player-toggle{border:1px solid #adcae9;color:#194c87;font-weight:750;background:#fff;border-radius:8px;padding:9px 13px;font-size:12px}
+.video-player-toggle:hover{background:#e3f0fc}
+.video-controls a{font-size:13px;font-weight:700;color:#0a559e;text-decoration:underline;text-underline-offset:2px}
+.lesson-video-section .video-heading strong{color:#173b71}
+@media(max-width:650px){.video-controls{align-items:stretch}.video-controls>*{width:100%;text-align:center}}
