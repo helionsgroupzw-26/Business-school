@@ -211,3 +211,137 @@ footer small{color:#8eaacc}
 .video-disclaimer,.video-fallback{font-size:12px!important;line-height:1.6!important;margin:12px 0 0!important;color:#5a6d85!important}
 .video-fallback a{color:#165eaa;text-decoration:underline}
 @media(max-width:650px){.lesson-video-section{margin:22px -5px;padding:13px}.video-launch{gap:8px}.video-launch strong{font-size:14px}.video-launch small{font-size:11px}}
+
+
+/* Mari Matters Youthful Fellowship Rebrand · November 2026 */
+:root{--mari-blue:#0756aa;--mari-dark:#082454;--mari-red:#f21f3e;--mari-cyan:#37d4ff;--mari-soft:#f2f7ff;scroll-behavior:smooth}
+body{background:#fff}
+header{background:#ffffffed;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid #dce8f8}
+header .nav{max-width:1250px;min-height:84px}
+.brand-mari{color:#0754ac;font-weight:1000}
+.brand-matters{color:#f01c3c}
+.brand-label{border-left:1px solid #dce6f5;padding-left:12px;max-width:158px;color:#102d60}
+.nav .nav-apply,.nav a.nav-apply:not(.brand){display:inline-flex;align-items:center;justify-content:center;padding:11px 18px;border-radius:100px;background:linear-gradient(115deg,#f32948,#d81737);color:white;font-weight:850;box-shadow:0 8px 21px #e42e4530;transition:transform .23s,box-shadow .23s}
+.nav .nav-apply:hover,.nav a.nav-apply:not(.brand):hover{transform:translateY(-3px);color:white;box-shadow:0 13px 28px #e42e4545}
+.nav a:not(.brand){transition:color .2s}
+.nav a:not(.brand):hover{color:#e91c3d}
+.mari-refresh{overflow:hidden;background:#fff;color:#0c2553}
+.mari-new-hero{position:relative;isolation:isolate;padding:96px 0 116px;background:radial-gradient(circle at 75% 34%,#eef7ff 0,#f8fbff 34%,#fff 72%);overflow:hidden}
+.mari-new-hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.18fr) minmax(340px,.82fr);gap:34px;align-items:center;max-width:1250px}
+.hero-ribbon{position:absolute;z-index:0;pointer-events:none;opacity:.98}
+.hero-ribbon-left{width:640px;height:150px;top:-70px;left:-135px;background:linear-gradient(135deg,#0054ae 4%,#042e7d 53%,#f32040 53%,#ff3a48 74%,transparent 74%);border-radius:0 0 90% 0;transform:rotate(-12deg)}
+.hero-ribbon-right{width:730px;height:190px;bottom:-95px;right:-165px;background:linear-gradient(150deg,transparent 17%,#ff3548 18%,#ed152d 55%,#0960b5 56%,#062971 90%);border-radius:70% 0 0 0;transform:rotate(-12deg)}
+.hero-bottom-wave{position:absolute;bottom:-74px;left:-4%;right:-4%;height:145px;border-radius:56% 50% 0 0;background:#e3efff;transform:rotate(-3deg);z-index:0;opacity:.45;pointer-events:none}
+.mari-hero-text{padding:30px 0}
+.mari-programme-chip{display:inline-flex;align-items:center;gap:10px;padding:10px 15px;border:1px solid #c7daf2;border-radius:40px;background:white;color:#104487;font-weight:850;font-size:11px;letter-spacing:.055em;box-shadow:0 9px 22px #052e7410}
+.chip-dot{height:9px;width:9px;flex-shrink:0;border-radius:50%;background:#ed2441;box-shadow:0 0 0 5px #fa244318}
+.mari-new-hero h1{font-size:clamp(3.4rem,6.3vw,6.8rem);color:#082f70;letter-spacing:-.064em;line-height:1.02;font-weight:950;margin:25px 0;max-width:790px}
+.mari-highlight{color:#f22943;display:inline-block;position:relative}
+.mari-highlight:after{content:"";display:block;width:90%;height:8px;position:absolute;left:2%;bottom:-13px;border-radius:100%;background:linear-gradient(90deg,#fa2842,#fda1ac);transform:rotate(-2deg)}
+.mari-hero-intro{font-size:17px;line-height:1.83;max-width:650px;color:#536581;margin:28px 0}
+.mari-hero-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:28px}
+.mari-refresh .btn,.mari-application-page .btn{border-radius:12px;font-weight:850;transition:transform .25s,box-shadow .25s}
+.mari-refresh .btn:hover,.mari-application-page .btn:hover{transform:translateY(-4px)}
+.mari-primary-action{background:linear-gradient(125deg,#f42d46,#de1535);color:white;padding:16px 24px;box-shadow:0 12px 32px #f022433b;border:1px solid #ff7886}
+.mari-primary-action:hover{background:linear-gradient(125deg,#df1836,#f32842);box-shadow:0 18px 34px #f0224354}
+.mari-primary-action span{margin-left:17px}
+.mari-secondary-action{font-weight:850;color:#0b438c;font-size:14px;padding:15px 2px}
+.mari-secondary-action:hover{color:#e91d3b;text-decoration:none}
+.mari-secondary-action span{display:inline-block;margin-left:7px;transition:transform .25s}
+.mari-secondary-action:hover span{transform:translateY(5px)}
+.mari-hero-meta{display:flex;gap:17px;flex-wrap:wrap;margin-top:37px}
+.mari-hero-meta span{color:#0c4788;font-size:11px;letter-spacing:.035em;font-weight:850}
+.mari-hero-art{height:550px;display:grid;place-items:center;position:relative}
+.mari-art-card{position:relative;z-index:2;width:85%;max-width:405px;min-height:470px;background:linear-gradient(148deg,#0a67c2,#06449c 40%,#08265d 85%);border-radius:31px;border:3px solid #ffffffb0;box-shadow:0 34px 55px #0a326b38,10px 15px 0 #eb2441;transform:rotate(-5deg);padding:32px 32px 28px;display:flex;flex-direction:column;justify-content:space-between;animation:mariFloat 6s ease-in-out infinite}
+.mari-art-card:before{content:"";position:absolute;inset:8px;border:1px solid #ffffff40;border-radius:24px;pointer-events:none}
+.mari-art-topline{color:#b4deff;font-weight:850;letter-spacing:.12em;font-size:10px;display:flex;justify-content:space-between;gap:8px}
+.mari-art-word{font-size:33px;font-weight:1000;letter-spacing:-.065em;color:white}
+.mari-art-word em{font-family:"Brush Script MT","Segoe Script",cursive;color:#ff5267;font-size:34px;font-weight:800}
+.mari-art-statement{font-size:clamp(2.5rem,4.7vw,4rem);font-weight:950;letter-spacing:-.06em;line-height:1.13;color:white;text-shadow:0 3px 6px #00183320}
+.mari-art-statement span{color:#ff5f75}
+.mari-art-bottom{border-top:1px solid #ffffff4d;padding-top:20px;display:flex;justify-content:space-between;color:#dbefff;letter-spacing:.065em;font-weight:900;font-size:13px}
+.mari-art-orbit{position:absolute;border:1px solid #1e73d625;border-radius:50%;pointer-events:none}
+.orbit-one{width:490px;height:490px}.orbit-two{width:580px;height:580px}
+.mari-floating-spark{position:absolute;z-index:3;font-weight:900;font-size:45px;color:#f02b4b;animation:mariPulse 3.5s ease-in-out infinite}
+.spark-one{top:34px;right:32px}.spark-two{bottom:35px;left:17px;font-size:31px;color:#0863c0;animation-delay:1s}
+.mari-orbit-pill{z-index:4;position:absolute;display:inline-block;padding:10px 17px;border-radius:30px;background:white;box-shadow:0 15px 35px #06276326;font-weight:900;font-size:10px;letter-spacing:.06em;color:#0b478d}
+.pill-one{top:88px;left:-13px;transform:rotate(-8deg)}.pill-two{bottom:70px;right:-12px;transform:rotate(6deg);color:#e22541}
+@keyframes mariFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-13px) rotate(-3deg)}}
+@keyframes mariPulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.2);opacity:1}}
+.mari-ticker{overflow:hidden;background:#f62843;color:white;transform:rotate(-.5deg);position:relative;z-index:2}
+.mari-ticker-track{display:flex;white-space:nowrap;align-items:center;gap:25px;padding:15px 20px;font-weight:850;letter-spacing:.11em;font-size:12px;animation:mariTicker 25s linear infinite;min-width:max-content}
+.mari-ticker-track b{color:#0a3974;font-size:22px}
+@keyframes mariTicker{to{transform:translateX(-45%)}}
+.mari-section-label{display:flex;gap:12px;align-items:center;color:#ec2543;letter-spacing:.12em;font-weight:950;font-size:12px;margin-bottom:20px}
+.mari-section-label>span{padding:6px 9px;background:#fff1f4;border-radius:7px}
+.mari-story-section,.mari-how-section{max-width:1250px;padding-top:100px;padding-bottom:100px}
+.mari-story-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:95px}
+.mari-story-grid h2,.mari-section-head h2,.mari-how-section h2{color:#0b306c;font-size:clamp(2.3rem,4.4vw,4.3rem);line-height:1.15;letter-spacing:-.055em;font-weight:900;margin:0}
+.mari-story-grid h2 span,.mari-section-head h2 span{color:#ee2544}
+.mari-story-grid p,.mari-section-head p{font-size:16px;line-height:1.84;color:#506583;margin:0 0 17px}
+.mari-text-link{display:inline-block;font-weight:900;color:#e62241;margin-top:8px}
+.mari-text-link span{margin-left:10px}
+.mari-impact-line{display:flex;align-items:center;gap:14px;margin-top:65px;background:#f2f7ff;border:1px solid #dfeafb;border-radius:22px;padding:21px 29px;font-size:clamp(16px,2.4vw,28px);color:#174a93;flex-wrap:wrap}
+.mari-impact-line strong{color:#f02241}.mari-impact-line-icon{margin-left:auto;color:#e82240;font-size:30px}
+.mari-journey-section{padding:92px 0 96px;background:linear-gradient(145deg,#f4f8ff,#eaf3ff)}
+.mari-journey-section .wrap{max-width:1250px}
+.mari-section-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:42px}
+.mari-section-head h2{max-width:670px}.mari-section-head p{max-width:375px;margin:0}
+.mari-new-week-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.mari-week-card{background:#fff;border:1px solid #dae7f7;border-radius:22px;padding:26px 22px;min-height:310px;display:flex;flex-direction:column;box-shadow:0 15px 30px #052e7509;transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease;cursor:default}
+.mari-week-card:hover{transform:translateY(-10px);box-shadow:0 25px 44px #05357824;border-color:#6c9ad8}
+.mari-week-card:nth-child(even){background:#0b3878;border-color:#0b3878}
+.week-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.week-card-top>span:first-child{font-size:11px;font-weight:900;color:#e62943;letter-spacing:.12em}
+.week-card-icon{display:grid;place-items:center;font-size:31px;color:#0b5cbb;border-radius:14px;background:#e8f2ff;width:58px;height:58px;transition:transform .27s}
+.mari-week-card:hover .week-card-icon{transform:rotate(-12deg) scale(1.1)}
+.mari-week-card h3{font-size:26px;line-height:1.12;letter-spacing:-.035em;margin:34px 0 12px;color:#0a326c}
+.mari-week-card p{font-size:14px;line-height:1.75;margin:0;color:#5b6b81;flex:1}
+.week-card-bottom{display:flex;justify-content:space-between;gap:6px;align-items:center;border-top:1px solid #e1eaf5;margin-top:21px;padding-top:17px;color:#10478e}
+.week-card-bottom span:first-child{font-size:10px;font-weight:850;letter-spacing:.025em}
+.week-card-bottom span:last-child{font-size:23px;color:#e72442}
+.mari-week-card:nth-child(even) .week-card-top>span:first-child{color:#ff8c9a}
+.mari-week-card:nth-child(even) .week-card-icon{background:#ffffff24;color:#fff}
+.mari-week-card:nth-child(even) h3,.mari-week-card:nth-child(even) .week-card-bottom{color:white}
+.mari-week-card:nth-child(even) p{color:#d5e4f6}
+.mari-week-card:nth-child(even) .week-card-bottom{border-color:#ffffff38}
+.mari-journey-footer{margin-top:34px;padding:25px 28px;display:flex;align-items:center;gap:20px;background:white;border-radius:18px}
+.mari-journey-footer p{margin:0;font-size:15px;color:#556883}.mari-journey-footer strong{color:#113a77}
+.mari-journey-asterisk{font-size:38px;color:#f02343}
+.mari-lead-section{background:radial-gradient(circle at 80% 20%,#1557a0 0,transparent 40%),linear-gradient(135deg,#062359,#0b3c83);color:white;overflow:hidden;padding:92px 0}
+.mari-lead-grid{max-width:1250px;display:grid;grid-template-columns:1.25fr .75fr;gap:70px;align-items:center}
+.mari-section-label.light{color:#ffadbc}.mari-section-label.light>span{background:#ffffff24}
+.mari-lead-section h2{color:#fff;font-size:clamp(2.3rem,4.6vw,4.6rem);line-height:1.12;letter-spacing:-.055em;margin:15px 0 27px}
+.mari-lead-section h2 em{color:#ff7386;font-style:normal}
+.mari-lead-section p{color:#d8e7fb;line-height:1.85;font-size:16px;max-width:650px}
+.mari-light-action{margin-top:16px;background:white;color:#0b3e82;padding:15px 24px;box-shadow:0 13px 35px #0019364a}
+.mari-light-action:hover{color:#0b3e82;background:#e9f3ff}
+.mari-lead-visual{min-height:360px;position:relative;display:grid;place-items:center}
+.mari-lead-circle{height:330px;width:330px;border-radius:50%;border:4px solid #ff6684;background:#e82a48;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:20px 20px 0 #ffffff1a,0 25px 55px #0003;color:white;font-size:37px;font-weight:1000;line-height:.86;transform:rotate(11deg);animation:mariFloatAlt 6s ease-in-out infinite}
+.mari-lead-circle small{font-size:18px;line-height:1.4}.mari-lead-circle em{font-style:normal;color:#0e3373;text-shadow:0 1px 0 #fff6}
+.mari-lead-spark{position:absolute;right:10px;top:20px;color:#ff7386;font-size:74px}
+@keyframes mariFloatAlt{50%{transform:translateY(-12px) rotate(7deg)}}
+.mari-how-section .mari-section-head{margin-bottom:35px}
+.mari-apply-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.mari-apply-step{padding:28px;border:1px solid #e1eaf7;border-radius:18px;background:#fff;box-shadow:0 8px 24px #082e6309;transition:transform .25s,border-color .25s}
+.mari-apply-step:hover{transform:translateY(-5px);border-color:#80a9de}
+.mari-apply-step>span{color:#ee2743;font-weight:900;font-size:30px}
+.mari-apply-step h3{margin:18px 0 9px;color:#0d3778;font-size:23px}
+.mari-apply-step p{margin:0;color:#586983}
+.mari-bottom-action{background:linear-gradient(110deg,#e6f0ff,#f5f9ff);padding:34px 38px;border-radius:24px;margin-top:32px;display:flex;align-items:center;justify-content:space-between;gap:28px}
+.mari-bottom-action h3{font-size:clamp(21px,2.7vw,30px);line-height:1.25;color:#08346f;margin:0 0 8px}
+.mari-bottom-action p{margin:0;color:#4b6384}
+.mari-bottom-action .btn{flex-shrink:0}
+.mari-application-page{max-width:1070px}
+.mari-application-page h1{font-size:clamp(2.4rem,5vw,4.3rem);letter-spacing:-.05em}
+.mari-application-callout{border-radius:25px;background:radial-gradient(circle at 85% 30%,#2372c5,#062a67 64%);color:#fff;padding:44px;display:flex;justify-content:space-between;gap:30px;position:relative;overflow:hidden;margin:32px 0 45px}
+.mari-application-callout h2{color:white;font-size:clamp(2rem,4vw,3.2rem);margin:12px 0}
+.mari-application-callout p{max-width:650px;color:#dceaff;line-height:1.8}
+.mari-application-callout .eyebrow{color:#ffb3c0}
+.mari-application-mark{font-size:140px;line-height:1;opacity:.24;color:#fff}
+.mari-application-page .application-steps .panel{transition:transform .25s,box-shadow .25s}
+.mari-application-page .application-steps .panel:hover{transform:translateY(-4px);box-shadow:0 15px 26px #0e366216}
+@media(max-width:1100px){.mari-new-hero-grid{grid-template-columns:1.04fr .96fr}.mari-art-card{min-height:420px}.mari-hero-art{height:480px}.mari-art-statement{font-size:3.1rem}.mari-new-week-grid{grid-template-columns:repeat(2,1fr)}.mari-story-grid{gap:40px}}
+@media(max-width:800px){.mari-new-hero-grid,.mari-story-grid,.mari-lead-grid{grid-template-columns:1fr}.mari-new-hero{padding:72px 0 88px}.mari-hero-art{height:420px}.mari-art-card{max-width:370px;min-height:370px}.mari-art-statement{font-size:3rem}.mari-orbit-pill{font-size:9px}.mari-section-head{display:block}.mari-section-head p{max-width:640px;margin-top:16px}.mari-story-section,.mari-how-section{padding-top:70px;padding-bottom:70px}.mari-lead-visual{min-height:330px}.mari-lead-circle{width:285px;height:285px}.mari-apply-steps{grid-template-columns:1fr}.mari-bottom-action{display:block}.mari-bottom-action .btn{margin-top:18px}.nav .nav-apply{padding:9px 15px}}
+@media(max-width:540px){.mari-programme-chip{font-size:9px;line-height:1.55;padding:8px 10px}.mari-new-hero h1{font-size:clamp(2.8rem,11.2vw,4.4rem)}.mari-hero-intro{font-size:15px}.mari-hero-meta{gap:11px}.mari-hero-meta span{font-size:9px}.mari-hero-art{height:342px}.mari-art-card{max-width:280px;min-height:290px;padding:22px}.mari-art-topline{font-size:8px}.mari-art-word{font-size:25px}.mari-art-word em{font-size:24px}.mari-art-statement{font-size:2.3rem}.mari-art-bottom{font-size:10px}.mari-art-orbit.orbit-one{width:320px;height:320px}.orbit-two{width:375px;height:375px}.mari-orbit-pill.pill-one{left:-7px;top:24px}.mari-orbit-pill.pill-two{right:-9px;bottom:21px}.hero-ribbon-left{width:390px;height:100px;top:-46px;left:-120px}.hero-ribbon-right{width:400px;height:115px;bottom:-75px;right:-120px}.mari-new-week-grid{grid-template-columns:1fr}.mari-week-card{min-height:250px}.mari-week-card h3{margin-top:18px}.mari-story-section,.mari-how-section{padding-top:57px;padding-bottom:58px}.mari-story-grid h2,.mari-section-head h2{font-size:2.2rem}.mari-impact-line{padding:17px;font-size:17px}.mari-journey-section{padding:65px 0}.mari-lead-section{padding:68px 0}.mari-lead-section h2{font-size:2.3rem}.mari-application-callout{padding:27px}.mari-application-mark{display:none}.mari-bottom-action{padding:27px}.mari-ticker-track{font-size:10px}.mari-hero-actions{gap:14px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.mari-art-card,.mari-floating-spark,.mari-ticker-track,.mari-lead-circle{animation:none!important}.mari-refresh *,header .nav *{transition:none!important}}
