@@ -345,3 +345,39 @@ header .nav{max-width:1250px;min-height:84px}
 @media(max-width:800px){.mari-new-hero-grid,.mari-story-grid,.mari-lead-grid{grid-template-columns:1fr}.mari-new-hero{padding:72px 0 88px}.mari-hero-art{height:420px}.mari-art-card{max-width:370px;min-height:370px}.mari-art-statement{font-size:3rem}.mari-orbit-pill{font-size:9px}.mari-section-head{display:block}.mari-section-head p{max-width:640px;margin-top:16px}.mari-story-section,.mari-how-section{padding-top:70px;padding-bottom:70px}.mari-lead-visual{min-height:330px}.mari-lead-circle{width:285px;height:285px}.mari-apply-steps{grid-template-columns:1fr}.mari-bottom-action{display:block}.mari-bottom-action .btn{margin-top:18px}.nav .nav-apply{padding:9px 15px}}
 @media(max-width:540px){.mari-programme-chip{font-size:9px;line-height:1.55;padding:8px 10px}.mari-new-hero h1{font-size:clamp(2.8rem,11.2vw,4.4rem)}.mari-hero-intro{font-size:15px}.mari-hero-meta{gap:11px}.mari-hero-meta span{font-size:9px}.mari-hero-art{height:342px}.mari-art-card{max-width:280px;min-height:290px;padding:22px}.mari-art-topline{font-size:8px}.mari-art-word{font-size:25px}.mari-art-word em{font-size:24px}.mari-art-statement{font-size:2.3rem}.mari-art-bottom{font-size:10px}.mari-art-orbit.orbit-one{width:320px;height:320px}.orbit-two{width:375px;height:375px}.mari-orbit-pill.pill-one{left:-7px;top:24px}.mari-orbit-pill.pill-two{right:-9px;bottom:21px}.hero-ribbon-left{width:390px;height:100px;top:-46px;left:-120px}.hero-ribbon-right{width:400px;height:115px;bottom:-75px;right:-120px}.mari-new-week-grid{grid-template-columns:1fr}.mari-week-card{min-height:250px}.mari-week-card h3{margin-top:18px}.mari-story-section,.mari-how-section{padding-top:57px;padding-bottom:58px}.mari-story-grid h2,.mari-section-head h2{font-size:2.2rem}.mari-impact-line{padding:17px;font-size:17px}.mari-journey-section{padding:65px 0}.mari-lead-section{padding:68px 0}.mari-lead-section h2{font-size:2.3rem}.mari-application-callout{padding:27px}.mari-application-mark{display:none}.mari-bottom-action{padding:27px}.mari-ticker-track{font-size:10px}.mari-hero-actions{gap:14px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.mari-art-card,.mari-floating-spark,.mari-ticker-track,.mari-lead-circle{animation:none!important}.mari-refresh *,header .nav *{transition:none!important}}
+
+/* Mari Matters practical fellowship learning */
+.lesson-practice-area{display:grid;gap:23px;margin:34px 0 26px}
+.practice-module{border:1px solid #dbe6f3;border-radius:19px;background:linear-gradient(145deg,#fbfdff,#f2f7ff);padding:25px;box-shadow:0 9px 25px #0b3d800b;min-width:0}
+.practice-module h3{font-size:clamp(20px,2.6vw,26px);color:#0d3776;margin:8px 0 12px;line-height:1.24}
+.practice-module>p,.practice-module p{color:#536785;line-height:1.75}
+.practice-kicker{font-size:11px;color:#df2c49;font-weight:900;letter-spacing:.1em}
+.practice-question{font-weight:800;color:#12366e!important;margin-top:16px}
+.practice-choices{display:grid;gap:9px;margin:19px 0}
+.practice-choice{display:flex;gap:13px;align-items:start;text-align:left;width:100%;font-size:14px;font-weight:600;line-height:1.5;padding:15px;border:1px solid #d5e3f3;color:#1b416c;background:#fff;border-radius:11px;transition:transform .15s,border-color .15s,background .15s}
+.practice-choice:hover{background:#eaf4ff;border-color:#80aad7;transform:translateY(-1px)}
+.practice-choice.choice-selected{border-color:#135ca9;background:#e4f1ff}
+.choice-letter{flex-shrink:0;display:grid;place-items:center;width:27px;height:27px;border-radius:7px;background:#eaf1fd;color:#1554a2;font-weight:900}
+.practice-feedback{border-radius:11px;padding:15px;font-size:14px}
+.practice-feedback.correct{background:#e6f6ee;color:#145936}
+.practice-feedback.try-again{background:#fff3df;color:#754713}
+.case-study-module small{color:#7a879b}
+.practice-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:20px 0}
+.practice-field{font-size:13px;font-weight:800;color:#264875;display:grid;gap:7px}
+.practice-input-wrap{border:1px solid #bfd1ea;border-radius:11px;background:white;display:flex;align-items:center;overflow:hidden}
+.practice-input-wrap>span{padding:12px;color:#52698b;background:#f1f6fe;font-size:12px;font-weight:850}
+.practice-input-wrap input{width:100%;min-width:0;padding:11px;border:0;background:white;font-size:15px;color:#113a73;font-weight:800;outline-offset:-3px}
+.practice-result{padding:20px 22px;background:#0c3d82;color:#fff;border-radius:15px;display:grid;gap:5px;margin-top:16px}
+.practice-result span{font-weight:700;color:#b9d6fb;font-size:12px}
+.practice-result strong{font-size:clamp(22px,3vw,31px);line-height:1.2;color:#fff}
+.practice-result .result-negative{color:#ffbbc5}
+.practice-result .result-positive{color:#d7ffef}
+.practice-result p{color:#e1edff!important;font-size:13px;margin:6px 0 10px}
+.practice-challenge{border-left:3px solid #ed3150;background:#fff;padding:13px 15px;margin:17px 0 0!important;border-radius:0 8px 8px 0}
+.workbook-download{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#fff}
+.workbook-download h3{margin:8px 0}
+.workbook-download p{font-size:13px;margin-bottom:0}
+.workbook-download button{flex-shrink:0;background:#e82644;color:white;border-radius:11px;font-weight:850;padding:15px 20px;box-shadow:0 9px 17px #e8264423}
+.workbook-download button:hover{background:#c91734;transform:translateY(-2px)}
+@media(max-width:650px){.practice-module{padding:18px}.practice-fields{grid-template-columns:1fr}.workbook-download{flex-direction:column;align-items:stretch}.workbook-download button{width:100%}}
+@media(prefers-reduced-motion:reduce){.practice-choice,.workbook-download button{transition:none!important}}
