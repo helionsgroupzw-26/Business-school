@@ -106,9 +106,9 @@ function Learning({user}){
     {pending.map((l)=>{
       const index=lessons.findIndex(item=>item.id===l.id);
       const week=Math.floor(index/3)+1;
-      const prev=lessons[index-1];
+      const previousPending=pending[pending.indexOf(l)-1];
       return <React.Fragment key={l.id}>
-       {(!prev||Math.floor((index-1)/3)!==week-1)&&<div className="sidebar-week">WEEK {week}</div>}
+       {(!previousPending||Math.ceil(previousPending.position/3)!==week)&&<div className="sidebar-week">WEEK {week}</div>}
        <button type="button" className={'lesson '+(active?.id===l.id?'selected':'')} aria-current={active?.id===l.id?'step':undefined} onClick={()=>openLesson(l.id)}><span className="lesson-state">○</span><span>{l.title.replace(/^Week \d+\s*·\s*Lesson \d+\s*[—–-]\s*/i,'')}</span></button>
       </React.Fragment>;
     })}
