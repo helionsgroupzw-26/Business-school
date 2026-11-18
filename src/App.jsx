@@ -2,6 +2,7 @@ import React,{useEffect,useState} from 'react';
 import {Link,NavLink,Navigate,Routes,Route,useNavigate,useParams} from 'react-router-dom';
 import {supabase,configured,errorText} from './supabase';
 import FinalQuiz from './FinalQuiz.jsx';
+import LessonPractice from './LessonPractice.jsx';
 import FellowshipPortal,{FellowshipHome,FellowshipApplication,FellowshipAdmin,FellowshipInviteActivate} from './FellowshipPortal.jsx';
 const emptyCourse={title:'',description:'',category:'Money & Budgeting',level:'Beginner',duration:'',published:false};
 function App(){
@@ -111,6 +112,7 @@ function Learning({user}){
    <section className="panel lessoncontent" id="fellowship-lesson">
     {active?<><span className="eyebrow">{readingFinished?'Previously completed unit':'Unit '+(lessons.findIndex(l=>l.id===active.id)+1)+' of '+lessons.length}</span><h2>{active.title}</h2><p>{active.summary}</p><ReadableLesson content={active.content}/>
     <LessonVideo key={active.id} url={active.video_url} title={active.title}/>
+    {id==='4617f7ff-344c-43d3-af2b-9d1a9afb005e'&&<LessonPractice key={active.id} position={active.position}/>}
     {active.file_path&&<><button onClick={download}>Get study material</button>{url&&<p><a href={url} target="_blank" rel="noreferrer">Open study file ↗</a></p>}</>}
     <div className="lesson-next-actions">
      {readingFinished?<><p>✓ You have already completed this unit. You can review it whenever you need to.</p>{pending.length>0?<button onClick={()=>openLesson(pending[0].id)}>Continue with next unfinished unit →</button>:<Link className="btn" to="/fellowship">Back to fellowship dashboard →</Link>}</>:
