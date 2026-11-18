@@ -440,3 +440,36 @@ header .nav{max-width:1250px;min-height:84px}
 .sidebar-quiz-link.locked{color:#7e8d9d}
 @media(max-width:640px){.weekly-quiz-card{padding:18px}.quiz-card-head{flex-direction:column;gap:7px}.quiz-submit-bar{flex-direction:column;align-items:stretch}.quiz-submit-bar button{width:100%}.quiz-option{align-items:flex-start}.quiz-option input{margin-top:3px}}
 @media(prefers-reduced-motion:reduce){.quiz-option{transition:none}}
+
+
+/* Fellowship quiz choices — clean A) B) C) D) layout on all screens */
+.weekly-quiz-card .quiz-form{width:100%;min-width:0}
+.weekly-quiz-card .quiz-question{display:block;width:100%;min-width:0;border:0;border-bottom:1px solid #e6edf6;margin:0 0 19px;padding:0 0 22px}
+.weekly-quiz-card .quiz-question legend{display:block;float:none;width:100%;max-width:100%;margin:0;padding:0 0 13px;font-size:clamp(15px,1.8vw,18px);line-height:1.48;font-weight:850;color:#0e3473;overflow-wrap:anywhere}
+.weekly-quiz-card .quiz-question legend span{display:block;margin:0 0 7px;font-size:11px;color:#e72c48;letter-spacing:.07em;font-weight:850}
+.weekly-quiz-card .quiz-options{display:flex;flex-direction:column;align-items:stretch;gap:6px;width:100%;min-width:0;margin:0}
+.weekly-quiz-card .quiz-answer-row,
+.weekly-quiz-card .quiz-form button.quiz-answer-row{
+ display:grid!important;grid-template-columns:30px minmax(0,1fr) 20px;align-items:start;justify-content:stretch;
+ gap:10px;width:100%;max-width:100%;height:auto!important;min-height:0!important;
+ margin:0!important;padding:10px 12px!important;background:#fff!important;
+ border:1px solid transparent!important;border-radius:8px!important;
+ box-shadow:none!important;outline-offset:2px;
+ color:#193a69!important;text-align:left!important;
+ font-family:inherit;font-size:15px;font-weight:500;line-height:1.5;
+ overflow-wrap:anywhere;white-space:normal;cursor:pointer;
+ transition:background .2s,border-color .2s;
+}
+.weekly-quiz-card .quiz-form button.quiz-answer-row:hover{background:#f0f6ff!important;border-color:#c6d9f3!important}
+.weekly-quiz-card .quiz-form button.quiz-answer-row.is-selected{background:#eaf2ff!important;border-color:#3c80c9!important}
+.weekly-quiz-card .quiz-answer-label{display:block;min-width:0;font-weight:850;color:#0d4e9b;line-height:1.5}
+.weekly-quiz-card .quiz-answer-text{display:block;min-width:0;max-width:100%;overflow-wrap:break-word;word-break:normal;white-space:normal}
+.weekly-quiz-card .quiz-answer-indicator{display:grid;place-items:center;width:19px;height:19px;border:1.5px solid #a6b8cd;border-radius:50%;color:#fff;line-height:1;font-size:12px;margin-top:2px}
+.weekly-quiz-card .quiz-answer-row.is-selected .quiz-answer-indicator{background:#0759ae;border-color:#0759ae}
+.weekly-quiz-card .quiz-answer-row:focus-visible{outline:3px solid #2988e9!important}
+@media(max-width:640px){
+ .weekly-quiz-card .quiz-question{margin-bottom:15px;padding-bottom:19px}
+ .weekly-quiz-card .quiz-answer-row,.weekly-quiz-card .quiz-form button.quiz-answer-row{grid-template-columns:25px minmax(0,1fr) 19px;gap:7px;padding:10px 7px!important;font-size:14px;line-height:1.48}
+ .weekly-quiz-card .quiz-question legend{font-size:15px;line-height:1.45}
+ .weekly-quiz-card .quiz-options{gap:5px}
+}
