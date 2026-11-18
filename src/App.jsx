@@ -100,7 +100,7 @@ function Learning({user}){
   const {data,error:downloadError}=await supabase.storage.from('lesson-materials').createSignedUrl(active.file_path,90);
   if(downloadError)setError(errorText(downloadError));else setUrl(data.signedUrl);
  }
- if(enrollmentLoading||lessonsLoading||progressLoading||attemptsLoading)return <main className="wrap"><p>Preparing your learning units and weekly assessments...</p></main>;
+ if(enrollmentLoading||lessonsLoading||progressLoading)return <main className="wrap"><p>Preparing your learning units and weekly assessments...</p></main>;
  if(!enrollments.length)return <main className="wrap"><h2>Fellowship access required</h2><p>This learning pathway is reserved for accepted fellows who have activated their cohort code.</p><Link to="/fellowship">My Fellowship</Link></main>;
  return <main className="wrap">
   <Link to="/fellowship">← Fellowship dashboard</Link>
