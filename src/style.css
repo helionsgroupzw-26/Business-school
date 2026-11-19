@@ -493,3 +493,42 @@ header .nav{max-width:1250px;min-height:84px}
 .auth-back-link{display:inline-block;margin-top:17px}
 .auth .panel{max-width:100%;overflow-wrap:anywhere}
 @media(max-width:600px){.auth .panel{padding:22px}.auth h1{font-size:clamp(27px,7vw,39px)}.auth-recover a{display:inline-block;padding:4px 0}}
+
+
+/* Mari Matters: signed-in account settings */
+.mari-account-page{max-width:1130px}
+.account-heading{max-width:740px;margin-bottom:25px}
+.account-heading h1{font-size:clamp(2.3rem,4.4vw,3.5rem);letter-spacing:-.04em}
+.account-heading p{font-size:16px}
+.account-overview{display:flex;align-items:center;gap:17px;margin-bottom:30px;padding:22px 25px;background:linear-gradient(115deg,#f0f6ff,#fff);border:1px solid #d9e8f7;border-radius:19px}
+.account-avatar{width:61px;height:61px;flex-shrink:0;display:grid;place-items:center;border-radius:18px;background:linear-gradient(135deg,#0d63bc,#062f72);color:white;font-size:28px;font-weight:900}
+.account-overview>div:last-child{display:flex;flex-direction:column;gap:3px;min-width:0}
+.account-overview strong{font-size:19px;color:#11376f}
+.account-overview span{font-size:13px;color:#5b6b83;overflow-wrap:anywhere}
+.account-overview small{font-size:12px;color:#dc2743;font-weight:800}
+.account-sections{display:grid;gap:25px;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);align-items:start}
+.account-form-card{padding:29px;min-width:0}
+.account-form-card h2{color:#123c77;font-size:25px;margin:10px 0 8px;letter-spacing:-.025em}
+.account-form-card>p{font-size:14px;margin:0 0 22px}
+.account-section-icon{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:#ffe9ed;color:#d82645;font-size:24px;font-weight:900}
+.account-icon-blue{background:#e5effe;color:#0f5bad}
+.account-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 17px}
+.account-password-fields{display:grid;gap:12px}
+.account-fields label,.account-password-fields label{display:block;margin:0;font-size:13px;color:#213b60;font-weight:800;min-width:0}
+.account-fields label input,.account-fields label textarea,.account-password-fields label input{margin-top:8px;max-width:100%;font-size:14px}
+.account-fields input[readonly]{background:#eef3fa;color:#586c85;cursor:not-allowed}
+.account-fields label small,.account-password-fields label small{display:block;font-size:11px;color:#7b8b9f;font-weight:500;margin-top:5px;line-height:1.5}
+.account-full-width,.account-form-footer{grid-column:1/-1}
+.account-required,.account-optional,.account-readonly{font-size:10px;color:#8290a5;font-weight:700;margin-left:4px}
+.account-required{color:#d42546}
+.account-fields textarea{min-height:110px;resize:vertical}
+.account-form-footer{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:9px}
+.account-form-footer button{background:#e32445;padding:12px 19px}
+.account-form-footer button:hover{background:#c71838}
+.account-message{flex:1 1 180px;color:#145b41!important;font-size:12px;line-height:1.55;margin:0}
+.account-help{margin-top:26px;background:#f2f7ff;border-radius:12px;padding:17px}
+.account-help strong{color:#1b497d;font-size:13px}
+.account-help p{font-size:12px;color:#586b83;margin:7px 0}
+.account-help a{font-size:13px;font-weight:850;color:#0f5db3}
+@media(max-width:870px){.account-sections{grid-template-columns:1fr}}
+@media(max-width:520px){.account-overview{padding:16px;gap:12px}.account-avatar{width:50px;height:50px;font-size:23px}.account-overview strong{font-size:17px}.account-form-card{padding:19px}.account-fields{grid-template-columns:1fr}.account-form-footer{display:block}.account-form-footer button{width:100%}.account-message{margin-top:12px}}
