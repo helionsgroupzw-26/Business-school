@@ -485,3 +485,11 @@ header .nav{max-width:1250px;min-height:84px}
 .mari-cohort-actions button.small{background:#0b56a4;color:white}
 .mari-cohort-actions button.small:hover{background:#093d7c}
 @media(max-width:650px){.mari-cohort-admin-row{align-items:stretch}.mari-cohort-actions{justify-content:space-between;gap:8px}.mari-cohort-actions button.small{flex:1}}
+
+/* Password recovery and sign in support */
+.auth-recover{margin:15px 0 3px}
+.auth-recover a,.auth-back-link{color:#0958a8;font-size:14px;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.auth-recover a:hover,.auth-back-link:hover{color:#d52543}
+.auth-back-link{display:inline-block;margin-top:17px}
+.auth .panel{max-width:100%;overflow-wrap:anywhere}
+@media(max-width:600px){.auth .panel{padding:22px}.auth h1{font-size:clamp(27px,7vw,39px)}.auth-recover a{display:inline-block;padding:4px 0}}
