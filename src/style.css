@@ -532,3 +532,23 @@ header .nav{max-width:1250px;min-height:84px}
 .account-help a{font-size:13px;font-weight:850;color:#0f5db3}
 @media(max-width:870px){.account-sections{grid-template-columns:1fr}}
 @media(max-width:520px){.account-overview{padding:16px;gap:12px}.account-avatar{width:50px;height:50px;font-size:23px}.account-overview strong{font-size:17px}.account-form-card{padding:19px}.account-fields{grid-template-columns:1fr}.account-form-footer{display:block}.account-form-footer button{width:100%}.account-message{margin-top:12px}}
+
+
+/* Fellowship recognition: two distinct programme milestones */
+.mari-award-pathway{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:26px 0}
+.mari-award-step{padding:27px 26px;min-width:0;background:linear-gradient(140deg,#fff,#f5f9ff)}
+.mari-award-step:nth-child(2){background:linear-gradient(140deg,#f2f7ff,#e5f1ff);border-color:#cfdef1}
+.mari-award-step h2{margin:12px 0;color:#0b3e7a;font-size:clamp(23px,3vw,30px);line-height:1.17}
+.mari-award-step p{color:#526782;line-height:1.7;font-size:14px}
+.award-progress{padding:13px 15px;background:#ecf2fa;border-radius:11px;color:#4a6181;display:grid;gap:4px;font-size:13px;margin-top:21px}
+.award-progress.award-achieved{background:#e1f7e9;color:#116642}
+.award-progress small{font-size:11px}
+.mari-member-review{align-items:center;gap:18px}
+.mari-member-review>div:first-child{display:grid;gap:5px;min-width:0}
+.mari-member-review small{font-size:12px;color:#657b96}
+.mari-review-actions{display:flex;gap:10px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+.mari-review-actions strong{font-size:12px;color:#146943}
+.mari-review-actions button.small{padding:10px 12px;border-radius:9px;background:#0b559d;color:#fff;font-weight:750;font-size:12px;white-space:normal}
+.mari-review-actions button.small:hover{background:#073979}
+@media(max-width:750px){.mari-award-pathway{grid-template-columns:1fr}.mari-member-review{align-items:flex-start;flex-direction:column}.mari-review-actions{justify-content:flex-start;width:100%}}
+@media(max-width:500px){.mari-award-step{padding:19px}.mari-review-actions button.small{width:100%}}
