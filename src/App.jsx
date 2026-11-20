@@ -58,8 +58,75 @@ function Home(){return <FellowshipHome/>}
 function CourseGrid({courses}){return courses.length?<div className="grid">{courses.map(c=><article className="card" key={c.id}><div className="art"><span className="course-art-symbol">✦</span><small>{c.category}</small></div><div className="pad"><span className="eyebrow">{c.level} · {c.duration||'Self-paced'}</span><h3>{c.title}</h3><p>{c.description}</p><Link to={'/courses/'+c.id}>View course →</Link></div></article>)}</div>:<div className="empty">No courses published yet. Check back soon.</div>}
 function Courses(){const [search,setSearch]=useState('');const {rows,loading,error}=useRows('courses',[['published',true]]);return <main className="wrap"><span className="eyebrow">Mari Matters Academy</span><h1>Explore our financial literacy courses</h1><p>Choose practical lessons that speak to your money goals, whether you are managing a household budget, growing a side hustle or planning for the future.</p><input placeholder="Search courses..." value={search} onChange={e=>setSearch(e.target.value)}/><Notice message={error}/>{loading?'Loading...':<CourseGrid courses={rows.filter(c=>(c.title+' '+c.category+' '+c.description).toLowerCase().includes(search.toLowerCase()))}/>}</main>}
 function CourseDetail({user}){const {id}=useParams(),nav=useNavigate();const {rows}=useRows('courses',[['id',id]]);const {rows:enrollments,reload}=useRows('enrollments',user?[['course_id',id],['user_id',user.id]]:[['course_id','00000000-0000-0000-0000-000000000000']]);const [busy,setBusy]=useState(false),[error,setError]=useState('');const course=rows[0];async function enroll(){if(!user){nav('/login');return}setBusy(true);const {error}=await supabase.from('enrollments').insert({course_id:id,user_id:user.id});setBusy(false);if(error)setError(errorText(error));else reload()}return <main className="wrap"><Link to="/courses">← All courses</Link>{course?<><span className="eyebrow">{course.category} · {course.level}</span><h1>{course.title}</h1><p>{course.description}</p><p>Duration: {course.duration||'Self-paced'}</p>{enrollments.length?<Link className="btn" to={'/learn/'+id}>Continue learning →</Link>:<button onClick={enroll} disabled={busy}>{busy?'Enrolling...':'Enrol in course'}</button>}<Notice message={error}/></>:<p>Loading course...</p>}</main>}
-function Auth({user}){const [name,setName]=useState(''),[email,setEmail]=useState(''),[password,setPassword]=useState(''),[code,setCode]=useState(''),[signup,setSignup]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState('');const navigate=useNavigate();if(user)return <Navigate to="/fellowship" replace/>;async function submit(e){e.preventDefault();if(!supabase)return;setBusy(true);setMessage('');if(signup){const test=await supabase.rpc('validate_shared_fellowship_code',{p_code:code});if(test.error||!test.data){setBusy(false);setMessage(test.error?errorText(test.error):'That fellowship access code is not valid. Please use the shared code provided by your cohort coordinator.');return}sessionStorage.setItem('mari_pending_code',code.trim().toUpperCase());const {error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name}}});setBusy(false);setMessage(error?errorText(error):'Account created. Check your email for confirmation, then sign in using the same address to activate your fellowship.');}else{const {error}=await supabase.auth.signInWithPassword({email,password});setBusy(false);if(error)setMessage(errorText(error));else navigate('/fellowship');}}return <main className="wrap auth"><div className="panel"><span className="eyebrow">Invitation-only fellowship</span><h1>{signup?'Activate your fellowship invitation':'Welcome back, fellow'}</h1><p>{signup?'If you have been accepted into the fellowship, enter the shared code provided to your cohort to create your own account.':'Sign in to continue your four-week learning journey. Weekly quizzes and cohort discussions take place in your separate fellowship group.'}</p><form onSubmit={submit}>{signup&&<label>Full name<input required value={name} onChange={e=>setName(e.target.value)}/></label>}<label>Email address<input type="email" required value={email} onChange={e=>setEmail(e.target.value)}/></label>{signup&&<label>Fellowship registration code<input required autoComplete="off" placeholder="Enter your cohort code" value={code} onChange={e=>setCode(e.target.value)}/></label>}<label>Password<input type="password" minLength={6} required value={password} onChange={e=>setPassword(e.target.value)}/></label><button disabled={busy||!configured}>{busy?'Processing...':signup?'Create my fellowship account':'Sign in'}</button></form><Notice message={message}/>{!signup&&<p className="auth-recover"><Link to="/forgot-password">Forgot your password? Reset it here →</Link></p>}<button className="linkbutton" onClick={()=>{setSignup(!signup);setMessage('')}}>{signup?'Already registered? Sign in':'Accepted into the fellowship? Create an account'}</button><p>Not yet selected? <Link to="/apply">Learn about applying for the next cohort →</Link></p></div></main>}
-
+function Auth({user}){
+ const [name,setName]=useState(''),[email,setEmail]=useState(''),[password,setPassword]=useState(''),[code,setCode]=useState(''),[signup,setSignup]=useState(false),[busy,setBusy]=useState(false),[googleBusy,setGoogleBusy]=useState(false),[message,setMessage]=useState('');
+ const navigate=useNavigate();
+ if(user)return <Navigate to="/fellowship" replace/>;
+ async function validateCode(){
+  const normalized=code.trim();
+  if(!normalized){setMessage('Enter the cohort registration code supplied by Mari Matters to create a fellow account.');return null}
+  const {data,error}=await supabase.rpc('validate_shared_fellowship_code',{p_code:normalized});
+  if(error||!data){setMessage(error?errorText(error):'That cohort code is not currently active. Please check with your coordinator.');return null}
+  return normalized.toUpperCase();
+ }
+ async function submit(e){
+  e.preventDefault();if(!supabase)return;
+  setBusy(true);setMessage('');
+  if(signup){
+   const validCode=await validateCode();
+   if(!validCode){setBusy(false);return}
+   sessionStorage.setItem('mari_pending_code',validCode);
+   const {error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name}}});
+   setBusy(false);
+   setMessage(error?errorText(error):'Account created. Check your email for confirmation, then sign in using the same address to activate your fellowship.');
+  }else{
+   const {error}=await supabase.auth.signInWithPassword({email,password});
+   setBusy(false);
+   if(error)setMessage(errorText(error));else navigate('/fellowship');
+  }
+ }
+ async function continueGoogle(){
+  if(!supabase||googleBusy)return;
+  setGoogleBusy(true);setMessage('');
+  let path='/fellowship';
+  if(signup){
+   const validCode=await validateCode();
+   if(!validCode){setGoogleBusy(false);return}
+   sessionStorage.setItem('mari_pending_code',validCode);
+   path='/activate';
+  }
+  const {error}=await supabase.auth.signInWithOAuth({
+   provider:'google',
+   options:{redirectTo:window.location.origin+path,queryParams:{prompt:'select_account'}}
+  });
+  if(error){
+   setGoogleBusy(false);
+   setMessage(errorText(error)+'. If Google sign-in is not yet enabled, the administrator must configure the Google provider in Supabase.');
+  }
+ }
+ return <main className="wrap auth"><div className="panel">
+  <span className="eyebrow">Invitation-only fellowship</span>
+  <h1>{signup?'Create your fellowship account':'Welcome back, fellow'}</h1>
+  <p>{signup?'Accepted participants can register with a cohort code. Choose Google to create an account without a separate password, or use an email and password.':'Sign in with your Google account or your existing email and password to continue your four-week learning journey.'}</p>
+  {signup&&<div className="google-enrol-fields"><label>Fellowship cohort code<input required autoComplete="off" placeholder="e.g. Mari1" value={code} onChange={e=>setCode(e.target.value)}/></label><small>This must be an active cohort code provided to accepted fellows.</small></div>}
+  <button type="button" className="google-auth-button" disabled={googleBusy||busy||!configured} onClick={continueGoogle}>
+   <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.27 5.48-4.8 7.18l7.73 6C44.38 38.02 46.98 31.87 46.98 24.55z"/><path fill="#FBBC05" d="M10.53 28.59A14.42 14.42 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.88 23.88 0 0 0 0 24c0 3.87.93 7.53 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.15 1.45-4.92 2.3-8.17 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.97 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+   <span>{googleBusy?'Opening Google…':signup?'Create account with Google':'Continue with Google'}</span>
+  </button>
+  <div className="google-auth-divider"><span>or use email and password</span></div>
+  <form onSubmit={submit}>
+   {signup&&<label>Full name<input required value={name} onChange={e=>setName(e.target.value)} autoComplete="name"/></label>}
+   <label>Email address<input type="email" autoComplete="email" required value={email} onChange={e=>setEmail(e.target.value)}/></label>
+   <label>Password<input type="password" minLength={6} autoComplete={signup?'new-password':'current-password'} required value={password} onChange={e=>setPassword(e.target.value)}/></label>
+   <button disabled={busy||googleBusy||!configured}>{busy?'Processing...':signup?'Create account using email':'Sign in with email'}</button>
+  </form>
+  {signup&&<p className="google-auth-info">For Google registration, enter your cohort code above first. After selecting your Google account, you will be asked to activate your fellowship code. Existing fellows can return using their linked sign-in method.</p>}
+  <Notice message={message}/>
+  {!signup&&<p className="auth-recover"><Link to="/forgot-password">Forgot your password? Reset it here →</Link></p>}
+  <button className="linkbutton" type="button" onClick={()=>{setSignup(!signup);setMessage('')}}>{signup?'Already registered? Sign in':'Accepted into the fellowship? Create an account'}</button>
+  <p>Not yet selected? <Link to="/apply">Learn about applying for the next cohort →</Link></p>
+ </div></main>
+}
 function ForgotPassword(){
  const [email,setEmail]=useState(''),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[sent,setSent]=useState(false);
  async function requestReset(e){
