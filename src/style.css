@@ -552,3 +552,16 @@ header .nav{max-width:1250px;min-height:84px}
 .mari-review-actions button.small:hover{background:#073979}
 @media(max-width:750px){.mari-award-pathway{grid-template-columns:1fr}.mari-member-review{align-items:flex-start;flex-direction:column}.mari-review-actions{justify-content:flex-start;width:100%}}
 @media(max-width:500px){.mari-award-step{padding:19px}.mari-review-actions button.small{width:100%}}
+
+
+/* Google OAuth sign-in */
+.google-auth-button{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;border:1px solid #d4dce8;border-radius:11px;background:#fff;color:#233650!important;font-weight:800;padding:13px 18px;cursor:pointer;box-shadow:0 1px 3px rgba(20,50,90,.06);margin:17px 0 13px;transition:background .15s,border-color .15s}
+.google-auth-button:hover:not(:disabled){background:#f5f8fc;border-color:#9fb3d0}
+.google-auth-button svg{flex-shrink:0}
+.google-auth-divider{display:flex;align-items:center;gap:12px;color:#7b8a9c;font-size:11px;font-weight:750;text-align:center;text-transform:uppercase;letter-spacing:.065em;margin:20px 0}
+.google-auth-divider::before,.google-auth-divider::after{content:"";height:1px;background:#dce4ef;flex:1}
+.google-enrol-fields{margin:15px 0 0}
+.google-enrol-fields label{font-weight:750}
+.google-enrol-fields input{margin-top:7px}
+.google-enrol-fields>small{display:block;color:#6d8096;font-size:12px;margin:6px 0}
+.google-auth-info{background:#edf5ff;border:1px solid #d4e7fa;padding:13px 15px;border-radius:11px;font-size:12px;line-height:1.65;color:#3b597c;margin-top:18px}
