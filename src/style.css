@@ -598,3 +598,12 @@ header .nav{max-width:1250px;min-height:84px}
 .mari-verification-foot{font-size:12px;color:#74859e;margin:18px 0 22px}
 @media(max-width:720px){.mari-certificate-item{align-items:flex-start;flex-wrap:wrap}.mari-certificate-actions{width:100%;justify-content:space-between}.mari-verification-result dl{grid-template-columns:1fr}.mari-verification-result{padding:20px}}
 @media(max-width:460px){.mari-certificate-section{padding:18px}.mari-certificate-actions button{white-space:normal}}
+
+
+/* Administrators can retrieve the original issued PDF for either approved stage */
+.mari-admin-certificate-downloads{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;width:100%;margin-top:6px}
+.mari-review-actions .mari-admin-certificate-button{background:#eef5ff!important;border:1px solid #a8c5e7!important;color:#124781!important;font-weight:800;border-radius:9px;padding:9px 12px;cursor:pointer}
+.mari-review-actions .mari-admin-certificate-button:hover:not(:disabled){background:#dcecff!important}
+.mari-review-actions .mari-admin-certificate-button:disabled{opacity:.55;cursor:wait}
+@media(max-width:750px){.mari-admin-certificate-downloads{justify-content:flex-start}}
+@media(max-width:460px){.mari-admin-certificate-downloads .mari-admin-certificate-button{width:100%}}
