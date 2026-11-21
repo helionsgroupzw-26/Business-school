@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {Link} from 'react-router-dom';
 import {supabase,errorText} from './supabase';
+import {MyCertificates} from './FellowshipCertificates.jsx';
 
 export default function MyAccount({user,onUpdated}){
  const [fullName,setFullName]=useState('');
@@ -51,6 +52,7 @@ export default function MyAccount({user,onUpdated}){
  return <main className="wrap mari-account-page">
   <div className="account-heading"><div className="eyebrow">MARI MATTERS · MY ACCOUNT</div><h1>Account settings</h1><p>Update your profile, manage your personal details and secure your fellowship account.</p></div>
   <div className="account-overview"><div className="account-avatar" aria-hidden="true">{(fullName||user.email||'M').trim().slice(0,1).toUpperCase()}</div><div><strong>{fullName||'My Mari Matters account'}</strong><span>{user.email}</span><small>{role==='admin'?'Administrator':'Fellow'} account</small></div></div>
+  <MyCertificates userId={user.id} compact/>
   <div className="account-sections">
    <section className="panel account-form-card" aria-labelledby="account-personal-heading">
     <div className="account-section-icon" aria-hidden="true">✦</div><h2 id="account-personal-heading">My profile</h2><p>Make sure your details are accurate. Your email address and your account permissions are managed separately.</p>
