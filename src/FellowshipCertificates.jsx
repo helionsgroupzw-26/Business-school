@@ -2,6 +2,7 @@ import React,{useEffect,useState} from 'react';
 import {Link,useParams} from 'react-router-dom';
 import {jsPDF} from 'jspdf';
 import QRCode from 'qrcode';
+import mariLogo from './mariLogo.js';
 import {supabase,errorText} from './supabase';
 
 const TITLES={
@@ -41,46 +42,75 @@ function logo(doc){
 }
 export async function downloadMariCertificate(cert){
  if(!cert||!TITLES[cert.award_type]||cert.revoked_at)throw new Error('This certificate is not available for download.');
- const verifyUrl=verificationLink(cert.id);
- const qr=await QRCode.toDataURL(verifyUrl,{errorCorrectionLevel:'H',margin:1,width:250,color:{dark:'#153A78',light:'#FFFFFFFF'}});
+ const leader=cert.award_type==='certified_financial_leader';
+ const qr=await QRCode.toDataURL(verificationLink(cert.id),{errorCorrectionLevel:'H',margin:2,width:280,color:{dark:'#123C77',light:'#FFFFFF'}});
  const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
- doc.setFillColor(249,251,255);doc.rect(0,0,297,210,'F');
- doc.setDrawColor(20,62,123);doc.setLineWidth(1.2);doc.rect(9,9,279,192,'S');
- doc.setDrawColor(221,43,72);doc.setLineWidth(0.7);doc.rect(13,13,271,184,'S');
- doc.setFillColor(20,62,123);doc.rect(0,0,297,6,'F');
- doc.setFillColor(221,43,72);doc.rect(0,204,297,6,'F');
- logo(doc);
- doc.setTextColor(23,56,104);doc.setFont('times','bold');doc.setFontSize(24);
- doc.text('CERTIFICATE OF ACHIEVEMENT',148.5,60,{align:'center',charSpace:1.2});
- doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(100,114,137);
- doc.text('This certificate is proudly presented to',148.5,73,{align:'center'});
- doc.setTextColor(13,58,116);drawCenteredText(doc,cert.recipient_name||'Certificate Holder',94,218,29,'times','bold');
- doc.setDrawColor(214,40,68);doc.setLineWidth(.6);doc.line(82,102,215,102);
- doc.setTextColor(80,95,119);doc.setFont('helvetica','normal');doc.setFontSize(11);
- doc.text('In recognition of successfully meeting the requirements of',148.5,112,{align:'center'});
- const title=TITLES[cert.award_type];
- doc.setTextColor(211,29,65);doc.setFont('times','bold');doc.setFontSize(24);
- doc.text(title,148.5,125,{align:'center'});
- doc.setFont('helvetica','normal');doc.setFontSize(9.3);doc.setTextColor(61,81,112);
- const statement=cert.award_type==='financial_literacy_fellow'
-  ?'Completion of four weeks of financial literacy learning and a verified pass in the final online assessment.'
-  :'Completion of the subsequent community financial literacy leadership stage, verified and approved by Mari Matters.';
- doc.text(doc.splitTextToSize(statement,195),148.5,135,{align:'center',lineHeightFactor:1.3});
- doc.setFont('helvetica','bold');doc.setFontSize(9.5);doc.setTextColor(26,67,123);
- doc.text('Certificate No. '+cert.certificate_number,27,166);
- doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(86,102,127);
- doc.text('Date issued: '+dateLabel(cert.issued_at),27,174);
- // The Board Chair's actual signature will be added when an authorised signature asset is supplied.
- doc.setDrawColor(76,100,143);doc.setLineWidth(.35);doc.line(119,166,184,166);
- doc.setTextColor(34,70,118);doc.setFont('helvetica','bold');doc.setFontSize(9);
- doc.text('Mari Matters Board Chair',151.5,172,{align:'center'});
- doc.setFont('helvetica','normal');doc.setFontSize(7.8);doc.setTextColor(99,115,137);
- doc.text('Authorised signature',151.5,177,{align:'center'});
- doc.addImage(qr,'PNG',237,150,32,32);
- doc.setFont('helvetica','normal');doc.setFontSize(6.8);doc.setTextColor(62,90,130);
- doc.text('Scan to verify',253,187,{align:'center'});
- doc.setFont('helvetica','italic');doc.setFontSize(7.5);
- doc.setTextColor(97,111,130);doc.text('A Mari Matters programme award. Not a government-issued professional licence.',148.5,193,{align:'center'});
+ const navy=[18,60,119],red=[214,40,73],muted=[99,114,137],light=[232,238,247];
+ const fill=c=>doc.setFillColor(...c),stroke=c=>doc.setDrawColor(...c),ink=c=>doc.setTextColor(...c);
+ const middle=148.5;
+ fill([255,255,255]);doc.rect(0,0,297,210,'F');
+ stroke(navy);doc.setLineWidth(leader?1.25:.85);doc.rect(8,8,281,194,'S');
+ stroke(leader?red:light);doc.setLineWidth(leader?.55:.35);doc.rect(12,12,273,186,'S');
+ if(leader){
+  fill(navy);doc.rect(13,13,271,4,'F');
+  fill(red);doc.rect(13,193,271,2,'F');
+  stroke(red);doc.setLineWidth(.4);doc.line(19,21,42,21);doc.line(255,189,279,189);
+ }else{
+  fill(red);doc.rect(15,15,48,2,'F');
+  fill(navy);doc.rect(234,193,48,2,'F');
+ }
+ // The exact logo supplied by Mari Matters, on a transparent background.
+ doc.addImage(mariLogo,'PNG',110,20,77,22.7);
+ ink(navy);doc.setFont('times','bold');doc.setFontSize(leader?19:18);
+ doc.text(leader?'CERTIFICATE OF RECOGNITION':'CERTIFICATE OF ACHIEVEMENT',middle,54,{align:'center',charSpace:.4});
+ stroke(red);doc.setLineWidth(.52);doc.line(119,59,178,59);
+ ink(muted);doc.setFont('helvetica','normal');doc.setFontSize(10);
+ doc.text('This certificate is proudly presented to',middle,71,{align:'center'});
+ const name=(cert.recipient_name||'Certificate Holder').trim();
+ ink(navy);doc.setFont('times','bold');doc.setFontSize(name.length>35?19:name.length>23?24:29);
+ const nameLines=doc.splitTextToSize(name,220);
+ const nameY=nameLines.length>1?80:87;
+ doc.text(nameLines,middle,nameY,{align:'center',lineHeightFactor:1.06});
+ stroke(light);doc.setLineWidth(.5);doc.line(73,103,224,103);
+ ink([63,79,101]);doc.setFont('helvetica','normal');doc.setFontSize(9.4);
+ const statement=leader?[
+  'for completing the Mari Matters Financial Literacy Leadership Programme,',
+  'including its approved community leadership stage, and is recognised as'
+ ]:[
+  'for completing four weeks of the Mari Matters Financial Literacy Fellowship,',
+  'passing the verified final online assessment, and is recognised as'
+ ];
+ statement.forEach((line,i)=>doc.text(line,middle,113+i*7,{align:'center'}));
+ if(leader){
+  fill(navy);doc.roundedRect(44,131,209,17,1,1,'F');
+  stroke(red);doc.setLineWidth(.65);doc.roundedRect(44,131,209,17,1,1,'S');
+  ink([255,255,255]);doc.setFont('times','bold');doc.setFontSize(19.3);
+  doc.text('CERTIFIED FINANCIAL LEADER',middle,143,{align:'center'});
+ }else{
+  fill([248,250,253]);doc.roundedRect(46,131,205,17,1,1,'F');
+  stroke(navy);doc.setLineWidth(.48);doc.roundedRect(46,131,205,17,1,1,'S');
+  ink(navy);doc.setFont('times','bold');doc.setFontSize(18);
+  doc.text('FINANCIAL LITERACY FELLOW',middle,143,{align:'center'});
+ }
+ if(leader){
+  stroke(red);doc.setLineWidth(.75);doc.circle(middle,161,7,'S');
+  doc.setFont('times','bold');doc.setFontSize(11);ink(navy);doc.text('MM',middle,164,{align:'center'});
+ }
+ ink(navy);doc.setFont('helvetica','bold');doc.setFontSize(8.2);
+ doc.text('CERTIFICATE NO.',24,168);
+ doc.setFont('helvetica','normal');doc.setFontSize(9);
+ doc.text(cert.certificate_number,24,174);
+ ink(muted);doc.setFont('helvetica','normal');doc.setFontSize(8.3);
+ doc.text('Issued '+dateLabel(cert.issued_at),24,182);
+ // Typographic TBanda flourish (sample signature style selected by the programme owner).
+ ink(navy);doc.setFont('times','bolditalic');doc.setFontSize(19);doc.text('TBanda',207,166,{align:'center'});
+ stroke(red);doc.setLineWidth(.45);doc.line(177,170,237,170);
+ ink(navy);doc.setFont('helvetica','bold');doc.setFontSize(8.8);doc.text('Tinashe Banda',207,176,{align:'center'});
+ ink(muted);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text('Mari Matters Board Chair',207,181,{align:'center'});
+ doc.addImage(qr,'PNG',251,156,26,26);
+ ink(muted);doc.setFont('helvetica','normal');doc.setFontSize(6.4);doc.text('Scan to verify',264,187,{align:'center'});
+ ink(muted);doc.setFont('helvetica','italic');doc.setFontSize(6.7);
+ doc.text('A Mari Matters programme award · Not a government-issued professional licence',middle,194,{align:'center'});
  doc.save(cert.certificate_number+'.pdf');
 }
 
