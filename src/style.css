@@ -565,3 +565,36 @@ header .nav{max-width:1250px;min-height:84px}
 .google-enrol-fields input{margin-top:7px}
 .google-enrol-fields>small{display:block;color:#6d8096;font-size:12px;margin:6px 0}
 .google-auth-info{background:#edf5ff;border:1px solid #d4e7fa;padding:13px 15px;border-radius:11px;font-size:12px;line-height:1.65;color:#3b597c;margin-top:18px}
+
+
+/* Official Mari Matters certificate wallet and QR verification */
+.mari-certificate-section{margin:25px 0;padding:27px;border:1px solid #dbe5f3;border-radius:18px;background:linear-gradient(145deg,#fff,#f8fbff)}
+.mari-certificate-compact{margin:10px 0 25px}
+.mari-certificate-header h2{font-size:clamp(22px,3vw,29px);margin:8px 0 7px;color:#123b79}
+.mari-certificate-header>p{font-size:14px;color:#5b708c;line-height:1.65;max-width:750px}
+.mari-certificate-list{display:grid;gap:13px;margin-top:20px}
+.mari-certificate-item{display:flex;align-items:center;gap:16px;border:1px solid #e0e7f0;border-radius:14px;padding:17px;background:#fff}
+.mari-certificate-symbol{display:grid;place-items:center;min-width:49px;height:49px;border-radius:12px;background:#fbe7ed;color:#d52247;font-size:28px}
+.mari-certificate-details{display:grid;gap:5px;min-width:0;flex:1}
+.mari-certificate-details strong{font-size:16px;color:#173e7a}
+.mari-certificate-details small{font-size:12px;color:#637b96;overflow-wrap:anywhere}
+.mari-certificate-details span{font-size:12px;color:#526c88}
+.mari-certificate-actions{display:flex;gap:10px;align-items:center}
+.mari-certificate-actions button{padding:11px 14px;background:#0d58a5;color:white;border-radius:9px;white-space:nowrap}
+.mari-certificate-actions a{font-size:12px;font-weight:800;white-space:nowrap}
+.mari-certificate-empty{padding:17px 20px;margin-top:18px;background:#f1f6fc;border-radius:12px;border:1px dashed #cadbef}
+.mari-certificate-empty strong{color:#274978}
+.mari-certificate-empty p{margin:7px 0 0;color:#627992;font-size:13px;line-height:1.6}
+.mari-verification-page{max-width:940px;padding-top:58px;padding-bottom:70px}
+.mari-verification-page h1{font-size:clamp(2rem,5vw,3rem);color:#123b7a}
+.mari-verification-result{padding:36px;margin-top:20px}
+.mari-verification-result h2{color:#146943;margin-top:10px}
+.mari-verified-symbol{width:55px;height:55px;display:grid;place-items:center;background:#dcfce9;color:#0a7847;border-radius:50%;font-size:28px;font-weight:900}
+.mari-verification-result dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px;margin-top:25px}
+.mari-verification-result dl>div{padding:12px 0;border-bottom:1px solid #e0e7ef}
+.mari-verification-result dt{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#71839b;font-weight:850}
+.mari-verification-result dd{margin:5px 0 0;font-weight:780;color:#193d77;overflow-wrap:anywhere}
+.mari-verification-invalid h2{color:#c62a44}
+.mari-verification-foot{font-size:12px;color:#74859e;margin:18px 0 22px}
+@media(max-width:720px){.mari-certificate-item{align-items:flex-start;flex-wrap:wrap}.mari-certificate-actions{width:100%;justify-content:space-between}.mari-verification-result dl{grid-template-columns:1fr}.mari-verification-result{padding:20px}}
+@media(max-width:460px){.mari-certificate-section{padding:18px}.mari-certificate-actions button{white-space:normal}}
