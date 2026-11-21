@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react';
 import {Link} from 'react-router-dom';
 import {supabase,errorText} from './supabase';
 import {FinalAssessmentAdmin} from './FellowshipQuizzes.jsx';
-import {MyCertificates} from './FellowshipCertificates.jsx';
+import {MyCertificates,downloadMariCertificate} from './FellowshipCertificates.jsx';
 const PROGRAM_ID='4617f7ff-344c-43d3-af2b-9d1a9afb005e';
 const stages={learning:'Four-week learning',fellow:'Financial Literacy Fellow',project:'Leadership development',graduated:'Certified Financial Leader'};
 const projectStatuses={submitted:'Proposal awaiting review',proposal_approved:'Proposal approved',report_submitted:'Community report awaiting review',approved:'Graduation approved',revision_required:'Revisions requested'};
@@ -83,7 +83,7 @@ export default function FellowshipPortal({user}){
  <p className="notice">These are programme-awarded Mari Matters titles. Passing weekly quizzes alone does not grant either title; recognition follows verified final assessment results and, for the second stage, approved practical community leadership work. Neither title represents a government-issued professional licence.</p>
  </main>
 }
-export function FellowshipAdmin(){const [cohorts,setCohorts]=useState([]),[members,setMembers]=useState([]),[name,setName]=useState(''),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
+export function FellowshipAdmin(){const [cohorts,setCohorts]=useState([]),[members,setMembers]=useState([]),[name,setName]=useState(''),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[downloadId,setDownloadId]=useState(null);
  async function reload(){
   const [a,b]=await Promise.all([
    supabase.from('fellowship_cohorts').select('*').order('created_at',{ascending:false}),
@@ -96,8 +96,18 @@ export function FellowshipAdmin(){const [cohorts,setCohorts]=useState([]),[membe
   const ids=[...new Set(fellows.map(m=>m.user_id))];
   const {data:profiles,error:profilesError}=await supabase.from('profiles').select('id,full_name').in('id',ids);
   const names=new Map((profiles||[]).map(p=>[p.id,p.full_name?.trim()||'']));
-  setMembers(fellows.map(m=>({...m,fellowName:names.get(m.user_id)||''})));
-  setMessage(profilesError?errorText(profilesError):'');
+  const memberIds=fellows.map(m=>m.id);
+  const {data:certificates,error:certificateError}=await supabase.from('fellowship_certificates')
+   .select('id,member_id,certificate_number,recipient_name,award_type,issued_at,revoked_at')
+   .in('member_id',memberIds).order('issued_at',{ascending:false});
+  const issued=new Map();
+  for(const cert of (certificates||[])){
+   if(cert.revoked_at)continue;
+   if(!issued.has(cert.member_id))issued.set(cert.member_id,[]);
+   issued.get(cert.member_id).push(cert);
+  }
+  setMembers(fellows.map(m=>({...m,fellowName:names.get(m.user_id)||'',issuedCertificates:issued.get(m.id)||[]})));
+  setMessage(profilesError||certificateError?errorText(profilesError||certificateError):'');
  }
  useEffect(()=>{reload()},[]);
  async function changeCohortStatus(cohort,newStatus){
@@ -114,10 +124,21 @@ export function FellowshipAdmin(){const [cohorts,setCohorts]=useState([]),[membe
   setBusy(false);
   if(error)setMessage(errorText(error));else{await reload();setMessage(kind==='assessment'?'Financial Literacy Fellow recognition recorded.':'Certified Financial Leader recognition recorded.')}
  }
+ async function downloadApprovedCertificate(cert){
+  setDownloadId(cert.id);setMessage('');
+  try{await downloadMariCertificate(cert)}catch(e){setMessage(errorText(e))}finally{setDownloadId(null)}
+ }
  async function addCohort(e){e.preventDefault();setBusy(true);const {error}=await supabase.from('fellowship_cohorts').insert({name:name.trim(),status:'planned',fellowship_course_id:PROGRAM_ID});setBusy(false);setMessage(error?errorText(error):'Cohort created. A registration code must be configured before it can admit participants.');if(!error){setName('');reload()}}
  return <main className="wrap fellowship-inner"><span className="eyebrow">Mari Matters · Administration</span><h1>Fellowship Learning Administration</h1><p>The portal manages learning access, cohorts and study materials. Weekly quizzes are marked and recorded in the portal. Cohort discussions, the final Google Form assessment and community project submissions are handled separately.</p>{message&&<p className="notice">{message}</p>}<div className="fellow-dashboard-stats"><div><span>Cohorts</span><strong>{cohorts.length}</strong></div><div><span>Registered fellows</span><strong>{members.length}</strong></div><div><span>Delivery model</span><strong>Online learning</strong></div></div>
  <section className="panel admin-section"><h2>Current cohorts</h2>{cohorts.map(c=><div className="cohort-row mari-cohort-admin-row" key={c.id}><div><strong>{c.name}</strong><small>{c.status}{/^Mari Matters Cohort ([1-9]|1[0-9]|20)$/.test(c.name)?' · Access code: Mari'+c.name.match(/[0-9]+$/)[0]:''}</small></div><div className="mari-cohort-actions"><span className={'cohort-status '+c.status}>{c.status}</span>{c.status==='planned'||c.status==='closed'?<button type="button" className="small" disabled={busy} onClick={()=>changeCohortStatus(c,'open')}>Open registration</button>:c.status==='open'||c.status==='active'?<button type="button" className="small" disabled={busy} onClick={()=>changeCohortStatus(c,'closed')}>Close registration</button>:null}</div></div>)}<form onSubmit={addCohort}><label>New cohort name<input required value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Mari Matters Cohort 2027 — Group 1"/></label><button disabled={busy}>Create cohort</button></form></section>
- <section className="panel admin-section"><h2>Fellows · assessment and leadership recognition</h2><p>After checking a participant's external final Google Form result, confirm Stage 1 to recognise them as a Financial Literacy Fellow. After reviewing and approving the subsequent community leadership stage, confirm Stage 2 to recognise them as a Certified Financial Leader. Each approval automatically issues a permanent numbered certificate, downloadable by the fellow under My Fellowship and My Account. Please verify the fellow’s full name before approving.</p>{members.length?members.map(m=><div className="cohort-row mari-member-review" key={m.id}><div><strong>{m.fellowName||'Name not provided'}</strong><small>{m.fellowship_cohorts?.name} · {stages[m.stage]||m.stage}</small></div><div className="mari-review-actions">{m.leadership_completed_at?<strong>✓ Certified Financial Leader</strong>:m.assessment_passed_at?<><strong>✓ Financial Literacy Fellow</strong><button type="button" className="small" disabled={busy} onClick={()=>confirmAward(m,'leadership')}>Confirm leadership stage completed</button></>:<button type="button" className="small" disabled={busy} onClick={()=>confirmAward(m,'assessment')}>Confirm final assessment passed</button>}</div></div>):<p>No fellows have activated their accounts yet.</p>}</section>
+ <section className="panel admin-section"><h2>Fellows · assessment and leadership recognition</h2><p>After checking a participant's external final Google Form result, confirm Stage 1 to recognise them as a Financial Literacy Fellow. After reviewing and approving the subsequent community leadership stage, confirm Stage 2 to recognise them as a Certified Financial Leader. Each approval automatically issues a numbered certificate. You can download issued certificates directly beside each fellow's name, and fellows can access their own copies under My Fellowship and My Account. Verify each fellow’s full name before approval.</p>{members.length?members.map(m=><div className="cohort-row mari-member-review" key={m.id}><div><strong>{m.fellowName||'Name not provided'}</strong><small>{m.fellowship_cohorts?.name} · {stages[m.stage]||m.stage}</small></div><div className="mari-review-actions">
+ {m.leadership_completed_at?<strong>✓ Certified Financial Leader</strong>:m.assessment_passed_at?<><strong>✓ Financial Literacy Fellow</strong><button type="button" className="small" disabled={busy} onClick={()=>confirmAward(m,'leadership')}>Confirm leadership stage completed</button></>:<button type="button" className="small" disabled={busy} onClick={()=>confirmAward(m,'assessment')}>Confirm final assessment passed</button>}
+ {(m.issuedCertificates||[]).length>0&&<div className="mari-admin-certificate-downloads" aria-label={'Issued certificates for '+(m.fellowName||'fellow')}>
+  {m.issuedCertificates.map(cert=><button type="button" className="small mari-admin-certificate-button" key={cert.id} disabled={downloadId!==null} title={cert.certificate_number+' · '+(cert.award_type==='certified_financial_leader'?'Certified Financial Leader':'Financial Literacy Fellow')} onClick={()=>downloadApprovedCertificate(cert)}>
+   {downloadId===cert.id?'Preparing PDF…':cert.award_type==='certified_financial_leader'?'↓ Certified Leader PDF':'↓ Fellow Certificate PDF'}
+  </button>)}
+ </div>}
+ </div></div>):<p>No fellows have activated their accounts yet.</p>}</section>
  <FinalAssessmentAdmin courseId={PROGRAM_ID}/>
  <section className="panel admin-section"><h2>Learning materials</h2><p>Manage the four-week learning units using the existing protected content editor. This is an internal administrator tool, not a public course catalogue.</p><Link className="btn" to={'/admin/courses/'+PROGRAM_ID}>Edit fellowship learning materials →</Link></section></main>
 }
