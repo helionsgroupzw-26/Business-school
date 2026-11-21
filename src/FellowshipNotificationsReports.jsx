@@ -82,12 +82,12 @@ export function FellowshipNotifications({userId}){
   <p>Project decisions and newly issued fellowship awards appear here when you sign in. Automatic email notifications are not enabled yet.</p>
   {error&&<p role="alert" className="notice">{error}</p>}
   {loading?<p>Loading notifications…</p>:!items.length?<p>No notifications yet.</p>:
-  <div>{items.map(x=><article key={x.id} style={{padding:'12px 0',borderBottom:'1px solid #ddd',opacity:x.read_at?.72:1}}>
+  <div>{items.map(x=><article key={x.id} style={{padding:'12px 0',borderBottom:'1px solid #ddd',opacity:x.read_at ? 0.72 : 1}}>
    <strong>{x.read_at?'':'● '}{x.title}</strong>
    <p>{x.message}</p>
    <small>{new Date(x.created_at).toLocaleString('en-GB')}</small>
    <div className="mari-review-actions" style={{marginTop:8,display:'flex',gap:10}}>
-    <Link to={x.path===' /admin/fellowship' ? '/admin/fellowship': x.path || '/fellowship'} className="small">View details</Link>
+    <Link to={x.path || '/fellowship'} className="small">View details</Link>
     {!x.read_at&&<button type="button" className="small" onClick={()=>markRead(x.id)}>Mark as read</button>}
    </div>
   </article>)}</div>}
