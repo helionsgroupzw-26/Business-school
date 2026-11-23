@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-import {Link,NavLink,Navigate,Routes,Route,useNavigate,useParams} from 'react-router-dom';
+import {Link,NavLink,Navigate,Routes,Route,useNavigate,useParams,useLocation} from 'react-router-dom';
 import {supabase,configured,errorText} from './supabase';
 import FinalQuiz from './FinalQuiz.jsx';
 import LessonPractice from './LessonPractice.jsx';
@@ -174,6 +174,7 @@ function FellowshipSafeFinalQuiz({user,profile}){
 }
 function Learning({user}){
  const {id}=useParams();
+ const {hash}=useLocation();
  const fellowship=id==='4617f7ff-344c-43d3-af2b-9d1a9afb005e';
  const {rows:enrollments,loading:enrollmentLoading}=useRows('enrollments',[['course_id',id],['user_id',user.id]]);
  const {rows:courses}=useRows('courses',[['id',id]]);
@@ -188,6 +189,12 @@ function Learning({user}){
  const passedWeeks=new Set(attempts.filter(a=>a.passed).map(a=>a.week));
  const weekOpen=w=>!fellowship||w===1||passedWeeks.has(w-1);
  const lessonOpen=l=>weekOpen(Math.ceil(l.position/3));
+ useEffect(()=>{
+  if(!lessonsLoading&&!progressLoading&&!attemptsLoading&&hash==='#weekly-assessments'){
+   const handle=window.setTimeout(()=>document.getElementById('weekly-assessments')?.scrollIntoView({behavior:'smooth',block:'start'}),180);
+   return ()=>window.clearTimeout(handle);
+  }
+ },[hash,lessonsLoading,progressLoading,attemptsLoading]);
  const pending=lessons.filter(l=>!completedIds.has(l.id));
  const current=lessons.find(l=>l.id===selected);
  const active=(current&&lessonOpen(current)?current:null)||pending.find(lessonOpen)||lessons.find(lessonOpen)||null;
