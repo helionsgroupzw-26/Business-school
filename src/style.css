@@ -657,3 +657,57 @@ header .nav{max-width:1250px;min-height:84px}
 @media (prefers-reduced-motion:reduce){
  .mobile-learning-page *{scroll-behavior:auto}
 }
+
+
+/* Mari Matters mobile-first fellow dashboard and activity refinements */
+.mari-mobile-start{border:1px solid #cddff3;background:linear-gradient(135deg,#f2f7ff,#fff);border-radius:18px;padding:25px;margin:22px 0 15px;box-shadow:0 5px 18px #133e720b}
+.mari-mobile-start h2{font-size:clamp(22px,3vw,30px);line-height:1.2;color:#123c77;margin:10px 0 14px}
+.mari-mobile-start .fellow-progress{margin:15px 0 7px}
+.mari-mobile-start>p{font-size:14px;margin:0 0 16px}
+.mari-mobile-start-action{background:#0e59a5;color:white!important;text-align:center;min-height:46px}
+.mari-mobile-shortcuts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-bottom:21px}
+.mari-mobile-shortcuts a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:70px;background:white;border:1px solid #dce7f4;border-radius:12px;color:#174d88;font-weight:800;text-align:center;font-size:19px;text-decoration:none}
+.mari-mobile-shortcuts a span{font-size:12px;line-height:1.3}
+.mari-mobile-shortcuts a:focus-visible{outline:3px solid #e32747;outline-offset:2px}
+.mari-mobile-anchor{scroll-margin-top:120px}
+.mari-draft-hint{background:#edf5ff;border:1px solid #cfdfef;color:#244872!important;padding:12px 15px;border-radius:10px;font-size:13px}
+.mari-clear-draft{background:#f2f5fa!important;color:#31527e!important;border:1px solid #cbd8e8;font-size:13px;padding:11px 14px}
+.mari-stage2-form textarea{font-size:16px;line-height:1.6}
+.mari-stage2-form input{font-size:16px!important}
+.mari-stage2-form button[type=submit]{min-height:46px}
+.mari-mobile-quiz-navigation{display:none}
+@media(max-width:850px){
+ .mari-mobile-shortcuts{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .mari-fellow-mobile .fellow-dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:650px){
+ .mari-fellow-mobile{padding-top:22px!important}
+ .mari-fellow-mobile>h1{font-size:clamp(28px,7.2vw,36px)}
+ .mari-mobile-start{padding:18px 16px;margin:18px 0}
+ .mari-mobile-start h2{font-size:22px}
+ .mari-mobile-start-action{display:flex;align-items:center;justify-content:center;width:100%}
+ .mari-mobile-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .mari-mobile-shortcuts a{min-height:64px}
+ .mari-fellow-mobile .fellow-dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .mari-fellow-mobile .fellow-dashboard-stats>div{padding:15px}
+ .mari-fellow-mobile .fellow-dashboard-stats strong{font-size:16px;overflow-wrap:anywhere}
+ .mari-fellow-mobile .week-grid{grid-template-columns:1fr}
+ .mari-stage2-form{max-width:100%}
+ .mari-stage2-form button[type=submit]{width:100%}
+ .mari-clear-draft{width:100%;margin-top:10px}
+ .mari-certificate-actions{flex-wrap:wrap;gap:10px}
+ .mari-certificate-actions button{min-height:44px;flex:1 1 auto}
+ .mari-certificate-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px}
+ .mari-mobile-quiz-navigation{display:grid;gap:10px;margin:16px 0 18px;padding:13px;border-radius:12px;background:#f1f6ff;color:#154b83;font-size:13px;font-weight:750}
+ .mari-mobile-quiz-buttons{display:flex;gap:9px}
+ .mari-mobile-quiz-buttons button{flex:1;min-height:46px;margin:0!important;padding:11px 7px!important;font-size:14px}
+ .mari-mobile-quiz-buttons button:first-child{background:#e5edf7;color:#194776}
+ .weekly-quiz-card .quiz-form .quiz-question{display:none!important}
+ .weekly-quiz-card .quiz-form .quiz-question.mari-question-active{display:block!important}
+ .weekly-quiz-card .quiz-submit-bar{display:grid;gap:9px}
+ .weekly-quiz-card .quiz-submit-bar button{width:100%;min-height:46px;white-space:normal}
+}
+@media(max-width:370px){
+ .mari-fellow-mobile .fellow-dashboard-stats{grid-template-columns:1fr}
+ .mari-mobile-shortcuts a span{font-size:11px}
+}
