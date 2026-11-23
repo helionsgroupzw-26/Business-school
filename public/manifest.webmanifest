@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "Mari Matters Financial Literacy Fellowship",
+  "short_name": "Mari Matters",
+  "description": "Learn. Lead. Impact. Mari Matters Financial Literacy Fellowship.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#123b79",
+  "icons": [
+    {
+      "src": "/mari-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
