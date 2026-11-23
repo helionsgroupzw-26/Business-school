@@ -1,8 +1,5 @@
 import React,{useEffect,useState} from 'react';
 import {Link,useParams} from 'react-router-dom';
-import {jsPDF} from 'jspdf';
-import QRCode from 'qrcode';
-import {downloadFromApprovedTemplate} from './CertificateTemplateRenderer.js';
 import {supabase,errorText} from './supabase';
 
 const TITLES={
@@ -26,6 +23,7 @@ export async function getMyCertificates(userId){
 }
 
 export async function downloadMariCertificate(cert){
+ const {downloadFromApprovedTemplate}=await import('./CertificateTemplateRenderer.js');
  return downloadFromApprovedTemplate(cert);
 }
 
