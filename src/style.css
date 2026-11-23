@@ -607,3 +607,53 @@ header .nav{max-width:1250px;min-height:84px}
 .mari-review-actions .mari-admin-certificate-button:disabled{opacity:.55;cursor:wait}
 @media(max-width:750px){.mari-admin-certificate-downloads{justify-content:flex-start}}
 @media(max-width:460px){.mari-admin-certificate-downloads .mari-admin-certificate-button{width:100%}}
+
+
+/* Mobile-first fellowship reader — desktop sidebar remains unchanged */
+.mobile-lessons-toggle,.mobile-lesson-context,.mobile-lesson-bottom-nav{display:none}
+.fellowship-sidebar-heading h3{margin:0 0 8px}
+.mobile-learning-page #fellowship-lesson{scroll-margin-top:108px}
+.mobile-learning-page .lesson-video-section,
+.mobile-learning-page .video-frame,
+.mobile-learning-page .fellow-reading{max-width:100%}
+.mobile-learning-page .video-frame{aspect-ratio:16 / 9}
+.mobile-learning-page .lesson-next-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.mobile-learning-page .lesson-next-actions>p{width:100%}
+.mobile-learning-page .lesson-next-actions button{min-height:44px}
+@media (min-width:751px){
+ .fellowship-sidebar-content{display:block!important}
+}
+@media (max-width:750px){
+ .mobile-learning-page{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))!important}
+ .mobile-learning-page .fellowship-reader{grid-template-columns:minmax(0,1fr);gap:14px}
+ .mobile-learning-page .fellowship-sidebar{position:static;padding:12px 15px;max-height:none;overflow:visible}
+ .mobile-learning-page .fellowship-sidebar-heading{display:flex;justify-content:space-between;gap:12px;align-items:center}
+ .mobile-learning-page .fellowship-sidebar-heading h3{font-size:17px;margin:0}
+ .mobile-lessons-toggle{display:inline-flex;min-height:44px;align-items:center;justify-content:center;border:1px solid #b9d0ee;border-radius:10px;background:#edf5ff!important;color:#124b89!important;font-size:13px;padding:10px 12px;margin:0}
+ .mobile-learning-page .fellowship-sidebar-content{display:none}
+ .mobile-learning-page .fellowship-sidebar-content.is-open{display:block;padding-top:12px}
+ .mobile-learning-page .fellowship-sidebar .lesson{min-height:44px;font-size:14px;padding:13px 12px}
+ .mobile-learning-page .sidebar-week{padding-top:15px}
+ .mobile-learning-page .sidebar-hint{margin-bottom:12px}
+ .mobile-learning-page .lessoncontent{padding:17px 15px;min-width:0}
+ .mobile-lesson-context{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;color:#1c5791;font-size:12px;font-weight:750;margin-bottom:12px}
+ .mobile-learning-page .lessoncontent>h2{font-size:clamp(22px,6vw,29px);line-height:1.25;overflow-wrap:anywhere}
+ .mobile-learning-page .fellow-reading{font-size:16px;line-height:1.8}
+ .mobile-learning-page .lesson-video-section{padding:12px;margin:20px 0}
+ .mobile-learning-page .video-heading{gap:9px}
+ .mobile-learning-page .video-heading h3{font-size:16px}
+ .mobile-learning-page .video-launch{padding:10px}
+ .mobile-learning-page .lesson-next-actions{padding:12px 0}
+ .mobile-lesson-bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:15;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-top:1px solid #dce5f1;box-shadow:0 -8px 24px #071d4020;padding:10px max(14px,env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-right,0px))}
+ .mobile-lesson-bottom-nav button,.mobile-lesson-bottom-nav a{min-height:46px;display:flex;align-items:center;justify-content:center;flex:1 1 0;margin:0!important;padding:10px;border-radius:9px;font-size:14px;font-weight:750;text-align:center}
+ .mobile-lesson-bottom-nav button:first-child{border:1px solid #c7d6e9;background:#f0f5fb;color:#164677}
+ .mobile-lesson-bottom-nav button:last-child,.mobile-lesson-bottom-nav a{background:#0e59a5;color:#fff}
+ .mobile-lesson-bottom-nav button:disabled{opacity:.45}
+}
+@media (max-width:360px){
+ .mobile-lesson-bottom-nav button,.mobile-lesson-bottom-nav a{font-size:12px;padding:9px 7px}
+ .mobile-learning-page .lessoncontent{padding:14px 12px}
+}
+@media (prefers-reduced-motion:reduce){
+ .mobile-learning-page *{scroll-behavior:auto}
+}
