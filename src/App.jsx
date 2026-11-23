@@ -180,7 +180,10 @@ function Learning({user}){
  const {rows:lessons,loading:lessonsLoading}=useRows('lessons',[['course_id',id]],'position');
  const {rows:progress,loading:progressLoading,reload:reloadProgress}=useRows('lesson_progress',[['user_id',user.id]]);
  const {rows:attempts,loading:attemptsLoading,reload:reloadAttempts}=useRows('fellowship_quiz_attempts',[['user_id',user.id],['course_id',id]]);
- const [selected,setSelected]=useState(null),[url,setUrl]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false);
+ const resumeKey='mari:last-lesson:'+user.id+':'+id;
+ const [selected,setSelected]=useState(()=>{try{return window.localStorage.getItem(resumeKey)}catch{return null}});
+ const [mobileMenuOpen,setMobileMenuOpen]=useState(false);
+ const [url,setUrl]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  const completedIds=new Set(progress.map(p=>p.lesson_id));
  const passedWeeks=new Set(attempts.filter(a=>a.passed).map(a=>a.week));
  const weekOpen=w=>!fellowship||w===1||passedWeeks.has(w-1);
@@ -192,8 +195,11 @@ function Learning({user}){
  const allFinished=lessons.length>0&&completeCount===lessons.length;
  const readingFinished=active&&completedIds.has(active.id);
  const next=active?lessons.find(l=>l.position>active.position&&lessonOpen(l)):null;
+ const previous=active?[...lessons].reverse().find(l=>l.position<active.position&&lessonOpen(l)):null;
+ useEffect(()=>{try{setSelected(window.localStorage.getItem(resumeKey))}catch{setSelected(null)}},[resumeKey]);
+ useEffect(()=>{if(active?.id){try{window.localStorage.setItem(resumeKey,active.id)}catch{}}},[active?.id,resumeKey]);
  useEffect(()=>{setUrl('')},[active?.id]);
- function openLesson(lessonId){const lesson=lessons.find(l=>l.id===lessonId);if(!lesson||!lessonOpen(lesson))return;setError('');setSelected(lessonId);window.scrollTo({top:0,behavior:'smooth'})}
+ function openLesson(lessonId){const lesson=lessons.find(l=>l.id===lessonId);if(!lesson||!lessonOpen(lesson))return;setError('');setSelected(lessonId);setMobileMenuOpen(false);window.scrollTo({top:0,behavior:'smooth'})}
  async function completeAndContinue(){
   if(!active||completedIds.has(active.id)||busy)return;
   setBusy(true);setError('');
@@ -215,14 +221,18 @@ function Learning({user}){
  }
  if(enrollmentLoading||lessonsLoading||progressLoading)return <main className="wrap"><p>Preparing your learning units and weekly assessments...</p></main>;
  if(!enrollments.length)return <main className="wrap"><h2>Fellowship access required</h2><p>This learning pathway is reserved for accepted fellows who have activated their cohort code.</p><Link to="/fellowship">My Fellowship</Link></main>;
- return <main className="wrap">
+ return <main className="wrap mobile-learning-page">
   <Link to="/fellowship">← Fellowship dashboard</Link>
   <h1>{fellowship?'My Fellowship Learning Units':courses[0]?.title||'Your learning pathway'}</h1>
   <p>{completeCount} of {lessons.length} units completed. {fellowship?'Finish the three lessons and pass the 10-question quiz (70%) to unlock the next week. Retake any quiz until you pass.':'Select a unit from the side panel and complete it to continue.'}</p>
   <div className="fellow-progress" role="progressbar" aria-label="Learning completion" aria-valuenow={completeCount} aria-valuemin="0" aria-valuemax={lessons.length||1}><div style={{width:(lessons.length?100*completeCount/lessons.length:0)+'%'}}/></div>
   <div className="learning fellowship-reader">
    <aside className="panel fellowship-sidebar">
-    <h3>Learning units</h3>
+    <div className="fellowship-sidebar-heading"><h3>Learning units</h3>
+      <button type="button" className="mobile-lessons-toggle" aria-expanded={mobileMenuOpen} aria-controls="fellowship-lesson-list" onClick={()=>setMobileMenuOpen(v=>!v)}>
+       {mobileMenuOpen?'Hide lessons ▲':'Browse lessons ▼'}
+      </button></div>
+    <div id="fellowship-lesson-list" className={'fellowship-sidebar-content '+(mobileMenuOpen?'is-open':'')}>
     <p className="sidebar-hint">{fellowship?'Each week unlocks after you pass the previous week’s quiz. Completed lessons remain available for review.':'Choose an unfinished unit. Completed units are available for review below.'}</p>
     {fellowship?Array.from({length:4},(_,wi)=>wi+1).map(week=>{
       const weekLessons=lessons.filter(l=>Math.ceil(l.position/3)===week);
@@ -234,9 +244,11 @@ function Learning({user}){
        <a className={'sidebar-quiz-link '+(locked?'locked':'')} href={'#week-'+week+'-quiz'}>Week {week} quiz · {passedWeeks.has(week)?'Passed':completed===3?'Ready':'10 questions'}</a>
       </div>
     }):<>{pending.map(l=><button type="button" key={l.id} className={'lesson '+(active?.id===l.id?'selected':'')} onClick={()=>openLesson(l.id)}>{l.title}</button>)}{completeCount>0&&<details className="completed-units"><summary>✓ Completed units ({completeCount})</summary>{lessons.filter(l=>completedIds.has(l.id)).map(l=><button type="button" key={l.id} className="lesson completed-lesson" onClick={()=>openLesson(l.id)}>✓ {l.title}</button>)}</details>}</>}
+    </div>
    </aside>
    <section className="panel lessoncontent" id="fellowship-lesson" key={active?.id || "no-active-lesson"}>
-    {active?<><span className="eyebrow">{readingFinished?'Previously completed unit':'Unit '+active.position+' of '+lessons.length}</span><h2>{active.title}</h2><p>{active.summary}</p>
+    {active?<><div className="mobile-lesson-context"><span>Week {Math.ceil(active.position/3)} · Lesson {((active.position-1)%3)+1}</span><span>{completeCount}/{lessons.length} complete</span></div>
+    <span className="eyebrow">{readingFinished?'Previously completed unit':'Unit '+active.position+' of '+lessons.length}</span><h2>{active.title}</h2><p>{active.summary}</p>
     <LessonVideo key={active.id} url={active.video_url} title={active.title} position={active.position}/>
     <ReadableLesson content={active.content}/>
     {fellowship&&<LessonPractice key={active.id} position={active.position}/>}
@@ -246,6 +258,10 @@ function Learning({user}){
      <><p>Finished the video, reading and practical exercises? Mark this unit complete. After your third lesson in each week, take its automatic quiz.</p><button disabled={busy} onClick={completeAndContinue}>{busy?'Saving progress...':next?'✓ Complete & next lesson →':fellowship?'✓ Complete & continue to weekly quiz →':'✓ Complete lesson →'}</button></>}
      {error&&<p className="notice">{error}</p>}
     </div>
+    <nav className="mobile-lesson-bottom-nav" aria-label="Mobile lesson navigation">
+     <button type="button" disabled={!previous} onClick={()=>previous&&openLesson(previous.id)}>← Previous</button>
+     {next?<button type="button" onClick={()=>openLesson(next.id)}>Next lesson →</button>:fellowship&&!passedWeeks.has(Math.ceil(active.position/3))?<a href={'#week-'+Math.ceil(active.position/3)+'-quiz'}>Weekly quiz ↓</a>:<Link to="/fellowship">Dashboard →</Link>}
+    </nav>
     </>:allFinished?<div className="learning-done"><h2>All twelve lessons completed!</h2><p>Review your weekly quiz results below, then take the external final online assessment. Passing that assessment earns Financial Literacy Fellow recognition after Mari Matters verifies your result. The later community leadership stage leads to Certified Financial Leader recognition.</p></div>:<div className="learning-done"><h2>Next week is locked</h2><p>Pass the previous week’s quiz with at least 70% to continue.</p></div>}
    </section>
   </div>
