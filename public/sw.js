@@ -1,5 +1,7 @@
 /* Mari Matters: cache only public static files. Never cache user profiles, database calls, authorisation, certificates or private pages. */
-const CACHE='mari-static-v1';
+const CACHE='mari-static-v2';
+const STATIC_LIMIT=40;
+async function cacheStatic(req,res){const cache=await caches.open(CACHE);await cache.put(req,res);const keys=await cache.keys();if(keys.length>STATIC_LIMIT){for(const key of keys.slice(0,keys.length-STATIC_LIMIT))await cache.delete(key)}}
 const PREPARE=['/offline.html','/mari-icon.svg'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(c=>c.addAll(PREPARE)).then(()=>self.skipWaiting()));
@@ -18,7 +20,7 @@ self.addEventListener('fetch',event=>{
  }
  if(!url.pathname.startsWith('/assets/')&&!['/mari-icon.svg','/manifest.webmanifest'].includes(url.pathname))return;
  event.respondWith(caches.match(req).then(cached=>cached||fetch(req).then(res=>{
-  if(res.ok&&res.type==='basic'){const copy=res.clone();caches.open(CACHE).then(cache=>cache.put(req,copy));}
+  if(res.ok&&res.type==='basic'){const copy=res.clone();cacheStatic(req,copy).catch(()=>{});}
   return res;
  })));
 });
