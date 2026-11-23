@@ -191,14 +191,14 @@ function Learning({user}){
  const completeCount=lessons.filter(l=>completedIds.has(l.id)).length;
  const allFinished=lessons.length>0&&completeCount===lessons.length;
  const readingFinished=active&&completedIds.has(active.id);
- const next=active?pending.find(l=>l.position>active.position&&lessonOpen(l)):null;
+ const next=active?lessons.find(l=>l.position>active.position&&lessonOpen(l)):null;
  useEffect(()=>{setUrl('')},[active?.id]);
  function openLesson(lessonId){const lesson=lessons.find(l=>l.id===lessonId);if(!lesson||!lessonOpen(lesson))return;setError('');setSelected(lessonId);window.scrollTo({top:0,behavior:'smooth'})}
  async function completeAndContinue(){
   if(!active||completedIds.has(active.id)||busy)return;
   setBusy(true);setError('');
   const currentWeek=Math.ceil(active.position/3);
-  const nextLesson=lessons.find(l=>l.position>active.position&&!completedIds.has(l.id)&&lessonOpen(l));
+  const nextLesson=lessons.find(l=>l.position>active.position&&lessonOpen(l));
   const {error:saveError}=await supabase.from('lesson_progress').insert({user_id:user.id,lesson_id:active.id});
   if(saveError){setError(errorText(saveError));setBusy(false);return}
   await reloadProgress();setBusy(false);
@@ -242,7 +242,7 @@ function Learning({user}){
     {fellowship&&<LessonPractice key={active.id} position={active.position}/>}
     {active.file_path&&<><button onClick={download}>Get study material</button>{url&&<p><a href={url} target="_blank" rel="noreferrer">Open study file ↗</a></p>}</>}
     <div className="lesson-next-actions">
-     {readingFinished?<><p>✓ You have completed this unit. You may review it whenever you need to.</p>{pending.some(lessonOpen)?<button type="button" onClick={()=>openLesson(pending.find(lessonOpen).id)}>Continue with next unfinished unit →</button>:fellowship&&!passedWeeks.has(Math.ceil(active.position/3))?<a className="btn" href={'#week-'+Math.ceil(active.position/3)+'-quiz'}>Go to Week {Math.ceil(active.position/3)} quiz ↓</a>:<Link className="btn" to="/fellowship">Return to fellowship dashboard →</Link>}</>:
+     {readingFinished?<><p>✓ You have completed this unit. You may review it whenever you need to.</p>{next?<button type="button" onClick={()=>openLesson(next.id)}>Next lesson →</button>:fellowship&&!passedWeeks.has(Math.ceil(active.position/3))?<a className="btn" href={'#week-'+Math.ceil(active.position/3)+'-quiz'}>Go to Week {Math.ceil(active.position/3)} quiz ↓</a>:<Link className="btn" to="/fellowship">Return to fellowship dashboard →</Link>}</>:
      <><p>Finished the video, reading and practical exercises? Mark this unit complete. After your third lesson in each week, take its automatic quiz.</p><button disabled={busy} onClick={completeAndContinue}>{busy?'Saving progress...':next?'✓ Complete & next lesson →':fellowship?'✓ Complete & continue to weekly quiz →':'✓ Complete lesson →'}</button></>}
      {error&&<p className="notice">{error}</p>}
     </div>
