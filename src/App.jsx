@@ -235,7 +235,7 @@ function Learning({user}){
       </div>
     }):<>{pending.map(l=><button type="button" key={l.id} className={'lesson '+(active?.id===l.id?'selected':'')} onClick={()=>openLesson(l.id)}>{l.title}</button>)}{completeCount>0&&<details className="completed-units"><summary>✓ Completed units ({completeCount})</summary>{lessons.filter(l=>completedIds.has(l.id)).map(l=><button type="button" key={l.id} className="lesson completed-lesson" onClick={()=>openLesson(l.id)}>✓ {l.title}</button>)}</details>}</>}
    </aside>
-   <section className="panel lessoncontent" id="fellowship-lesson">
+   <section className="panel lessoncontent" id="fellowship-lesson" key={active?.id || "no-active-lesson"}>
     {active?<><span className="eyebrow">{readingFinished?'Previously completed unit':'Unit '+active.position+' of '+lessons.length}</span><h2>{active.title}</h2><p>{active.summary}</p>
     <LessonVideo key={active.id} url={active.video_url} title={active.title} position={active.position}/>
     <ReadableLesson content={active.content}/>
