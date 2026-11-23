@@ -4,6 +4,7 @@ import {supabase,errorText} from './supabase';
 const WEEK_NAMES=['Money and financial wellbeing','Saving, debt and protection','Financial independence','Financial literacy leadership'];
 export function WeeklyQuiz({week,courseId,lessonsDone,priorPassed,passed,attempts,onPassed}){
  const [expanded,setExpanded]=useState(false);
+ const [questionIndex,setQuestionIndex]=useState(0);
  const [questions,setQuestions]=useState(null);
  const [responses,setResponses]=useState({});
  const [result,setResult]=useState(null);
@@ -13,7 +14,7 @@ export function WeeklyQuiz({week,courseId,lessonsDone,priorPassed,passed,attempt
  const ready=lessonsDone===3&&priorPassed;
  const last=attempts.length?attempts.reduce((a,b)=>a.submitted_at>b.submitted_at?a:b):null;
  const answered=Object.keys(responses).length;
- useEffect(()=>{setQuestions(null);setResponses({});setResult(null);setExpanded(false);setError('')},[week,courseId]);
+ useEffect(()=>{setQuestions(null);setResponses({});setResult(null);setExpanded(false);setQuestionIndex(0);setError('')},[week,courseId]);
  async function open(){
   if(!ready)return;
   if(expanded){setExpanded(false);return}
@@ -33,7 +34,7 @@ export function WeeklyQuiz({week,courseId,lessonsDone,priorPassed,passed,attempt
   setResult(data);
   await onPassed?.();
  }
- function retry(){setResponses({});setResult(null);setExpanded(true);document.getElementById('week-'+week+'-quiz')?.scrollIntoView({behavior:'smooth',block:'start'})}
+ function retry(){setResponses({});setResult(null);setQuestionIndex(0);setExpanded(true);document.getElementById('week-'+week+'-quiz')?.scrollIntoView({behavior:'smooth',block:'start'})}
  return <section id={'week-'+week+'-quiz'} className={'weekly-quiz-card '+(passed?'quiz-passed':'')+' '+(!ready?'quiz-locked':'')}>
   <div className="quiz-card-head">
    <div><div className="quiz-eyebrow">WEEK {week} · KNOWLEDGE CHECK</div><h3>{WEEK_NAMES[week-1]}</h3><p>10 multiple-choice questions · Pass with 7/10 (70%) · Unlimited retakes</p></div>
@@ -44,7 +45,14 @@ export function WeeklyQuiz({week,courseId,lessonsDone,priorPassed,passed,attempt
    <div className="quiz-open-actions"><button type="button" onClick={open} className="quiz-start-btn">{expanded?'Hide quiz':passed?'Review or retake Week '+week+' quiz':'Start Week '+week+' quiz →'}</button>{passed&&<span className="quiz-pass-hint">Week {week+1<=4?week+1+' lessons are unlocked.':'4 is complete.'}</span>}</div>}
   {error&&<p role="alert" className="notice">{error}</p>}
   {expanded&&ready&&(loading?<p>Preparing your questions...</p>:questions&&!result?<form onSubmit={submit} className="quiz-form">
-    {questions.map((q,i)=><fieldset className="quiz-question" key={q.id}><legend><span>QUESTION {i+1} OF 10</span>{q.question}</legend><div className="quiz-options">{q.options.map((option,index)=><button type="button" key={index} aria-pressed={responses[q.id]===index} className={'quiz-answer-row '+(responses[q.id]===index?'is-selected':'')} onClick={()=>setResponses(s=>({...s,[q.id]:index}))}><span className="quiz-answer-label">{String.fromCharCode(65+index)})</span><span className="quiz-answer-text">{option}</span><span className="quiz-answer-indicator" aria-hidden="true">{responses[q.id]===index?'✓':''}</span></button>)}</div></fieldset>)}
+    {questions.map((q,i)=><fieldset className={'quiz-question '+(i===questionIndex?'mari-question-active':'')} key={q.id}><legend><span>QUESTION {i+1} OF 10</span>{q.question}</legend><div className="quiz-options">{q.options.map((option,index)=><button type="button" key={index} aria-pressed={responses[q.id]===index} className={'quiz-answer-row '+(responses[q.id]===index?'is-selected':'')} onClick={()=>setResponses(s=>({...s,[q.id]:index}))}><span className="quiz-answer-label">{String.fromCharCode(65+index)})</span><span className="quiz-answer-text">{option}</span><span className="quiz-answer-indicator" aria-hidden="true">{responses[q.id]===index?'✓':''}</span></button>)}</div></fieldset>)}
+    <div className="mari-mobile-quiz-navigation">
+     <span>Question {questionIndex+1} of {questions.length} · {answered} answered</span>
+     <div className="mari-mobile-quiz-buttons">
+      <button type="button" disabled={questionIndex===0} onClick={()=>setQuestionIndex(i=>Math.max(0,i-1))}>← Previous</button>
+      <button type="button" disabled={questionIndex>=questions.length-1} onClick={()=>setQuestionIndex(i=>Math.min(questions.length-1,i+1))}>Next question →</button>
+     </div>
+    </div>
     <div className="quiz-submit-bar"><span>{answered} of 10 answered</span><button type="submit" disabled={saving||answered!==10}>{saving?'Marking your answers...':'Submit answers for marking →'}</button></div>
    </form>:result?<div className="quiz-results" role="status">
     <div className={'quiz-result-hero '+(result.passed?'quiz-success':'quiz-retry')}><span>{result.passed?'✓ YOU PASSED':'KEEP LEARNING'}</span><strong>{result.score}/10 <small>({result.score*10}%)</small></strong><p>{result.passed?'Well done! Your next week of learning is unlocked.':'You need 7 out of 10 to pass. Review the feedback and try again when ready.'}</p></div>

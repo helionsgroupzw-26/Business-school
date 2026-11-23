@@ -75,16 +75,34 @@ export default function FellowshipPortal({user}){
  const {member,lessons,progress,quizAttempts}=data;
  const passedWeeks=new Set(quizAttempts.filter(a=>a.passed).map(a=>a.week));
  const completed=lessons.filter(l=>progress.some(p=>p.lesson_id===l.id)).length;
+ const nextLesson=lessons.find(l=>!progress.some(p=>p.lesson_id===l.id) && (l.position<=3||passedWeeks.has(Math.ceil(l.position/3)-1)));
+ const nextAction=nextLesson ? 'Ready for your next lesson' : passedWeeks.size<4 ? 'Review your weekly quizzes' : member.assessment_passed_at ? 'Explore Stage 2 and your awards' : 'Complete your final assessment';
+ const learningLink='/learn/'+member.fellowship_cohorts.fellowship_course_id;
  const weekData=[{name:'Understanding money and financial wellbeing',desc:'Income, household budgeting and money decisions in everyday Zimbabwe.'},{name:'Saving, borrowing and financial protection',desc:'Emergency funds, mukando, debt, digital payments and consumer safety.'},{name:'Building financial independence',desc:'Small business money, cash flow, goals and money conversations.'},{name:'Financial literacy leadership',desc:'Sharing financial knowledge and planning community education.'}];
- return <main className="wrap fellowship-inner"><span className="eyebrow">Mari Matters · Four-week learning</span><h1>My Fellowship Learning Space</h1><p>{member.fellowship_cohorts.name} · Learn at your own pace and complete your ten-question weekly quizzes here and take part in your separate cohort discussions.</p><div className="fellow-dashboard-stats"><div><span>Learning units</span><strong>{completed} of {lessons.length} complete</strong></div><div><span>Learning pathway</span><strong>Four weeks online</strong></div><div><span>Weekly quizzes passed</span><strong>{passedWeeks.size} of 4</strong></div></div>
+ return <main className="wrap fellowship-inner mari-fellow-mobile"><span className="eyebrow">Mari Matters · Four-week learning</span><h1>My Fellowship Learning Space</h1><p>{member.fellowship_cohorts.name} · Learn at your own pace and complete your ten-question weekly quizzes here and take part in your separate cohort discussions.</p>
+ <section className="mari-mobile-start" aria-label="Your next learning step">
+  <span className="eyebrow">CONTINUE YOUR JOURNEY</span>
+  <h2>{nextAction}</h2>
+  <div className="fellow-progress" role="progressbar" aria-label="Lesson completion" aria-valuemin="0" aria-valuemax={lessons.length||1} aria-valuenow={completed}><div style={{width:(lessons.length?100*completed/lessons.length:0)+'%'}}/></div>
+  <p>{completed}/{lessons.length} lessons completed · {passedWeeks.size}/4 weekly quizzes passed</p>
+  <Link className="btn mari-mobile-start-action" to={learningLink}>Continue Learning →</Link>
+ </section>
+ <nav className="mari-mobile-shortcuts" aria-label="Fellowship quick links">
+  <Link to={learningLink}>▤ <span>My Lessons</span></Link>
+  <Link to={learningLink+'#weekly-assessments'}>✓ <span>Weekly Quizzes</span></Link>
+  <a href="#mari-community-project">◎ <span>My Project</span></a>
+  <a href="#mari-fellow-certificates">✦ <span>Certificates</span></a>
+  <a href="#mari-fellow-notifications">◉ <span>Notifications</span></a>
+ </nav>
+ <div className="fellow-dashboard-stats"><div><span>Learning units</span><strong>{completed} of {lessons.length} complete</strong></div><div><span>Learning pathway</span><strong>Four weeks online</strong></div><div><span>Weekly quizzes passed</span><strong>{passedWeeks.size} of 4</strong></div></div>
  <div className="panel"><h2>Stage 1 · Become a Financial Literacy Fellow</h2><p>Each week introduces practical financial topics and activities. Read your learning materials here and mark completed units so you can track your progress. Each week ends with a ten-question multiple-choice quiz, automatically marked. Score at least 70% to unlock the next week; you can retake any quiz until you pass.</p><div className="fellow-progress"><div style={{width:(lessons.length?100*completed/lessons.length:0)+'%'}}/></div><p>{completed} of {lessons.length} learning units completed.</p><div className="week-grid">{weekData.map((w,i)=>{const subset=lessons.filter(l=>l.position>=i*3+1&&l.position<=(i+1)*3);const count=subset.filter(l=>progress.some(p=>p.lesson_id===l.id)).length;return <article key={i}><strong>WEEK {String(i+1).padStart(2,'0')}</strong><h3>{w.name}</h3><p>{w.desc}</p><small>{count}/{subset.length} lessons · {passedWeeks.has(i+1)?'✓ Quiz passed':i===0||passedWeeks.has(i)?'Quiz pending':'Next week locked'}</small></article>})}</div><p style={{marginTop:24}}><Link className="btn" to={'/learn/'+member.fellowship_cohorts.fellowship_course_id}>Open learning materials →</Link></p></div>
  <section className="mari-award-pathway" aria-label="Two-stage fellowship recognition">
   <div className="panel mari-award-step"><span className="eyebrow">STAGE 1 · FOUR WEEKS + ONLINE ASSESSMENT</span><h2>Financial Literacy Fellow</h2><p>Complete the twelve lessons and four weekly portal quizzes, then pass the separate final online assessment. The Mari Matters team verifies the result before awarding the Financial Literacy Fellow title.</p><div className={'award-progress '+(member.assessment_passed_at?'award-achieved':'')}><strong>{member.assessment_passed_at?'✓ Award confirmed':passedWeeks.size===4?'Final assessment / verification pending':'Complete your four-week learning'}</strong>{member.assessment_passed_at&&<small>Verified on {fmtDate(member.assessment_passed_at)}</small>}</div></div>
   <div className="panel mari-award-step"><span className="eyebrow">STAGE 2 · COMMUNITY LEADERSHIP</span><h2>Certified Financial Leader</h2><p>Once recognised as a Financial Literacy Fellow, proceed to the practical leadership stage: plan and deliver an approved community financial literacy initiative and complete the review requirements communicated by Mari Matters.</p><div className={'award-progress '+(member.leadership_completed_at?'award-achieved':'')}><strong>{member.leadership_completed_at?'✓ Leadership certification confirmed':member.assessment_passed_at?'Leadership stage in progress / awaiting review':'Unlocks after Stage 1 recognition'}</strong>{member.leadership_completed_at&&<small>Verified on {fmtDate(member.leadership_completed_at)}</small>}</div></div>
  </section>
- <FellowshipNotifications userId={user.id}/>
- <LeadershipProject memberId={member.id} enabled={!!member.assessment_passed_at}/>
- <MyCertificates userId={user.id}/>
+ <div id="mari-fellow-notifications" className="mari-mobile-anchor"><FellowshipNotifications userId={user.id}/></div>
+ <div id="mari-community-project" className="mari-mobile-anchor"><LeadershipProject memberId={member.id} enabled={!!member.assessment_passed_at}/></div>
+ <div id="mari-fellow-certificates" className="mari-mobile-anchor"><MyCertificates userId={user.id}/></div>
  <p className="notice">These are programme-awarded Mari Matters titles. Passing weekly quizzes alone does not grant either title; recognition follows verified final assessment results and, for the second stage, approved practical community leadership work. Neither title represents a government-issued professional licence.</p>
  </main>
 }

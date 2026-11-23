@@ -13,29 +13,45 @@ export function LeadershipProject({memberId,enabled}){
  const [project,setProject]=useState(null),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
  const [title,setTitle]=useState(''),[audience,setAudience]=useState(''),[proposal,setProposal]=useState('');
  const [report,setReport]=useState(''),[reached,setReached]=useState('');
+ const draftKey='mari-stage2-draft:'+memberId;
+ function saveDraft(field,value){
+  try{const saved=JSON.parse(window.localStorage.getItem(draftKey)||'{}');
+   window.localStorage.setItem(draftKey,JSON.stringify({...saved,[field]:value,updatedAt:new Date().toISOString()}))}catch{}
+ }
+ function clearDraft(){try{window.localStorage.removeItem(draftKey)}catch{}}
+ function applySavedFields(data){
+  const canEditProposal=!data||data.status==='submitted'||(data.status==='revision_required'&&!data.project_report);
+  const canEditReport=data&&(data.status==='proposal_approved'||data.status==='report_submitted'||(data.status==='revision_required'&&data.project_report));
+  let saved={};try{saved=JSON.parse(window.localStorage.getItem(draftKey)||'{}')}catch{}
+  setTitle(canEditProposal?(saved.title??data?.title??''):(data?.title||''));
+  setAudience(canEditProposal?(saved.audience??data?.audience??''):(data?.audience||''));
+  setProposal(canEditProposal?(saved.proposal??data?.proposal??''):(data?.proposal||''));
+  setReport(canEditReport?(saved.report??data?.project_report??''):(data?.project_report||''));
+  setReached(canEditReport?(saved.reached??data?.participants_reached?.toString()??''):(data?.participants_reached?.toString()||''));
+ }
  async function refresh(){
   const {data,error}=await supabase.from('fellowship_projects').select('*').eq('member_id',memberId).maybeSingle();
   if(error){setMessage(errorText(error));return}
   setProject(data);
-  if(data){setTitle(data.title||'');setAudience(data.audience||'');setProposal(data.proposal||'');setReport(data.project_report||'');setReached(data.participants_reached?.toString()||'')}
+  applySavedFields(data);
  }
  useEffect(()=>{let active=true;
   supabase.from('fellowship_projects').select('*').eq('member_id',memberId).maybeSingle().then(({data,error})=>{
    if(!active)return;
-   if(error)setMessage(errorText(error));else if(data){setProject(data);setTitle(data.title||'');setAudience(data.audience||'');setProposal(data.proposal||'');setReport(data.project_report||'');setReached(data.participants_reached?.toString()||'')}
+   if(error)setMessage(errorText(error));else {setProject(data);applySavedFields(data)}
    setLoading(false);
   });return()=>{active=false};
  },[memberId]);
  async function submitProposal(e){
   e.preventDefault();setBusy(true);setMessage('');
   const {error}=await supabase.rpc('fellowship_submit_proposal',{p_title:title.trim(),p_audience:audience.trim(),p_proposal:proposal.trim()});
-  if(error)setMessage(errorText(error));else{await refresh();setMessage('Your project proposal was submitted for review.')}
+  if(error)setMessage(errorText(error));else{clearDraft();await refresh();setMessage('Your project proposal was submitted for review.')}
   setBusy(false);
  }
  async function submitReport(e){
   e.preventDefault();setBusy(true);setMessage('');
   const {error}=await supabase.rpc('fellowship_submit_report',{p_report:report.trim(),p_reached:Number(reached)});
-  if(error)setMessage(errorText(error));else{await refresh();setMessage('Community impact report submitted for assessment.')}
+  if(error)setMessage(errorText(error));else{clearDraft();await refresh();setMessage('Community impact report submitted for assessment.')}
   setBusy(false);
  }
  if(!enabled)return <section className="panel"><h2>Stage 2 · Community Leadership Project</h2><p>This stage unlocks after the Mari Matters team confirms your Financial Literacy Fellow award.</p></section>;
@@ -47,21 +63,23 @@ export function LeadershipProject({memberId,enabled}){
  {project&&<div className="notice"><strong>Status: {TITLES[project.status]||project.status}</strong>
  {project.reviewer_feedback&&<p>Reviewer's feedback: {project.reviewer_feedback}</p>}
  {project.assessment_score!==null&&<p>Assessment: {project.assessment_score}%</p>}</div>}
- {proposalEditable&&<form className="form" onSubmit={submitProposal}>
+ {(proposalEditable||reportEditable)&&<p className="mari-draft-hint">Drafts are saved automatically in this browser while you type. They are not submitted until you press Submit. On shared phones, clear your draft after use.</p>}
+ {proposalEditable&&<form className="form mari-stage2-form" onSubmit={submitProposal}>
   <h3>Project proposal</h3>
-  <label>Project title <input value={title} onChange={e=>setTitle(e.target.value)} required minLength={8} maxLength={160}/></label>
-  <label>Target community or audience <input value={audience} onChange={e=>setAudience(e.target.value)} required minLength={8} maxLength={240}/></label>
+  <label>Project title <input value={title} onChange={e=>{setTitle(e.target.value);saveDraft('title',e.target.value)}} required minLength={8} maxLength={160}/></label>
+  <label>Target community or audience <input value={audience} onChange={e=>{setAudience(e.target.value);saveDraft('audience',e.target.value)}} required minLength={8} maxLength={240}/></label>
   <label>Describe your plan, activities and expected impact (minimum 150 characters)
-  <textarea rows={7} value={proposal} onChange={e=>setProposal(e.target.value)} required minLength={150}/></label>
+  <textarea rows={7} value={proposal} onChange={e=>{setProposal(e.target.value);saveDraft('proposal',e.target.value)}} required minLength={150}/></label>
   <button type="submit" disabled={busy||proposal.trim().length<150}>{busy?'Submitting...':project?'Update proposal':'Submit proposal'}</button>
  </form>}
- {reportEditable&&<form className="form" onSubmit={submitReport}>
+ {reportEditable&&<form className="form mari-stage2-form" onSubmit={submitReport}>
   <h3>Community impact report</h3>
   <p>Explain the event, lessons delivered, outcomes and evidence gathered. Keep supporting evidence available for administrator review.</p>
-  <label>Number of participants reached <input type="number" min="0" step="1" value={reached} onChange={e=>setReached(e.target.value)} required/></label>
-  <label>Project report (minimum 150 characters)<textarea rows={8} value={report} onChange={e=>setReport(e.target.value)} required minLength={150}/></label>
+  <label>Number of participants reached <input type="number" min="0" step="1" value={reached} onChange={e=>{setReached(e.target.value);saveDraft('reached',e.target.value)}} required/></label>
+  <label>Project report (minimum 150 characters)<textarea rows={8} value={report} onChange={e=>{setReport(e.target.value);saveDraft('report',e.target.value)}} required minLength={150}/></label>
   <button type="submit" disabled={busy||report.trim().length<150||reached===''}>{busy?'Submitting...':project.status==='report_submitted'?'Update report':'Submit report'}</button>
  </form>}
+ {(proposalEditable||reportEditable)&&<button type="button" className="mari-clear-draft" disabled={busy} onClick={()=>{if(!window.confirm('Discard your locally saved unsent changes?'))return;clearDraft();applySavedFields(project)}}>Discard locally saved draft</button>}
  {project&&!proposalEditable&&!reportEditable&&<p>{project.status==='approved'?'Your project is approved. Your Certified Financial Leader award will be issued when an administrator completes the final award confirmation.':'Your submission is being reviewed. Return here for feedback.'}</p>}
  {message&&<p className="notice" role="status">{message}</p>}
  </section>;
