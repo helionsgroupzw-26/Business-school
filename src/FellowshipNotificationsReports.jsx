@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useState,useCallback} from 'react';
 import {Link} from 'react-router-dom';
 import {supabase,errorText} from './supabase';
 
@@ -62,15 +62,25 @@ export function FellowshipNotifications({userId}){
  const [items,setItems]=useState([]);
  const [loading,setLoading]=useState(true);
  const [error,setError]=useState('');
- async function refresh(){
+ const refresh=useCallback(async(silent=false)=>{
   if(!userId)return;
+  if(!silent)setLoading(true);
   const {data,error:e}=await supabase.from('fellowship_notifications')
    .select('id,title,message,kind,path,created_at,read_at')
    .eq('recipient_id',userId).order('created_at',{ascending:false}).limit(30);
   if(e)setError(errorText(e));else{setItems(data||[]);setError('')}
   setLoading(false);
- }
- useEffect(()=>{refresh()},[userId]);
+ },[userId]);
+ useEffect(()=>{
+  if(!userId)return;
+  refresh();
+  const onVisible=()=>{if(document.visibilityState==='visible')refresh(true)};
+  const onFocus=()=>refresh(true);
+  document.addEventListener('visibilitychange',onVisible);
+  window.addEventListener('focus',onFocus);
+  const timer=window.setInterval(()=>{if(document.visibilityState==='visible')refresh(true)},60000);
+  return()=>{document.removeEventListener('visibilitychange',onVisible);window.removeEventListener('focus',onFocus);window.clearInterval(timer)};
+ },[userId,refresh]);
  async function markRead(id){
   const {error:e}=await supabase.rpc('mark_fellowship_notification_read',{p_notification_id:id});
   if(e)setError(errorText(e));else setItems(s=>s.map(x=>x.id===id?{...x,read_at:new Date().toISOString()}:x));
@@ -78,8 +88,8 @@ export function FellowshipNotifications({userId}){
  const unread=items.filter(x=>!x.read_at).length;
  return <section className="panel mari-notifications">
   <div className="heading"><div><span className="eyebrow">MARI MATTERS</span><h2>My notifications {unread?('('+unread+' new)'):''}</h2></div>
-   <button type="button" className="small" onClick={refresh} disabled={loading}>{loading?'Loading…':'Refresh'}</button></div>
-  <p>Project decisions and newly issued fellowship awards appear here when you sign in. Automatic email notifications are not enabled yet.</p>
+   <button type="button" className="small" onClick={()=>refresh()} disabled={loading}>{loading?'Loading…':'Refresh'}</button></div>
+  <p>Welcome messages, project decisions, new certificate awards and support replies appear here. While this page is open, the list refreshes automatically about once a minute. Email alerts are not enabled.</p>
   {error&&<p role="alert" className="notice">{error}</p>}
   {loading?<p>Loading notifications…</p>:!items.length?<p>No notifications yet.</p>:
   <div>{items.map(x=><article key={x.id} style={{padding:'12px 0',borderBottom:'1px solid #ddd',opacity:x.read_at ? 0.72 : 1}}>
