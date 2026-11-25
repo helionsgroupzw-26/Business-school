@@ -6,6 +6,7 @@ import {MyCertificates,downloadMariCertificate} from './FellowshipCertificates.j
 import {LeadershipProject,LeadershipProjectAdmin} from './LeadershipProjects.jsx';
 import {FellowshipAdminOverview,FellowshipCohortManager} from './FellowshipAdminTools.jsx';
 import {FellowshipReports,FellowshipNotifications} from './FellowshipNotificationsReports.jsx';
+import {FellowSupport,FellowSupportAdmin} from './FellowshipSupport.jsx';
 const PROGRAM_ID='4617f7ff-344c-43d3-af2b-9d1a9afb005e';
 const stages={learning:'Four-week learning',fellow:'Financial Literacy Fellow',project:'Leadership development',graduated:'Certified Financial Leader'};
 const projectStatuses={submitted:'Proposal awaiting review',proposal_approved:'Proposal approved',report_submitted:'Community report awaiting review',approved:'Graduation approved',revision_required:'Revisions requested'};
@@ -66,6 +67,45 @@ async function getMemberData(userId){
 export function FellowshipInviteActivate({user}){const [code,setCode]=useState(()=>sessionStorage.getItem('mari_pending_code')||''),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
  async function activate(e){e.preventDefault();setBusy(true);setMessage('');const {data,error}=await supabase.rpc('redeem_shared_fellowship_code',{p_code:code.trim()});setBusy(false);if(error)setMessage(errorText(error));else{sessionStorage.removeItem('mari_pending_code');setMessage('Invitation activated! You have joined '+data.cohort+'. Open your fellowship dashboard.');}}
  return <main className="wrap fellowship-inner auth"><section className="panel"><span className="eyebrow">Accepted fellows only</span><h1>Activate your invitation</h1><p>Signed in as <strong>{user.email}</strong>. Enter the shared registration code provided by your cohort coordinator. Weekly quizzes are completed in this portal. The final online assessment and leadership-stage project submissions are organised separately.</p><form onSubmit={activate}><label>Fellowship registration code<input required placeholder="Cohort registration code" autoComplete="off" value={code} onChange={e=>setCode(e.target.value)}/></label><button disabled={busy||!code.trim()}>{busy?'Activating...':'Activate fellowship access'}</button></form>{message&&<p className="notice">{message}</p>}<Link to="/fellowship">Open fellowship dashboard →</Link></section></main>}
+function FellowStartHere({learningLink,completed,passedCount,member}){
+ const [open,setOpen]=useState(()=>{
+  try{return window.localStorage.getItem('mari-start-guide-read')!=='yes'}catch{return true}
+ });
+ function toggle(){
+  setOpen(previous=>{const next=!previous;try{if(!next)window.localStorage.setItem('mari-start-guide-read','yes')}catch{}return next});
+ }
+ return <section className="panel mari-start-here" id="start-here" aria-labelledby="mari-start-title">
+  <div className="mari-start-heading"><div><span className="eyebrow">NEW FELLOWS · START HERE</span><h2 id="mari-start-title">Your Mari Matters journey</h2></div><button className="small" type="button" onClick={toggle} aria-expanded={open}>{open?'Hide guide':'View guide'}</button></div>
+  {open&&<div>
+   <p>Welcome! This four-week fellowship teaches practical money skills and prepares you to share them responsibly with your community. Learn at your own pace; the two programme awards are earned at separate milestones.</p>
+   <ol className="mari-start-steps">
+    <li><strong>Start Week 1.</strong> Open the written lessons, watch the supporting videos and complete each lesson. <Link to={learningLink}>Open lessons</Link></li>
+    <li><strong>Pass your weekly quizzes.</strong> After each group of three lessons, take the 10-question quiz. Score at least 7/10 to unlock the next week. You can retry.</li>
+    <li><strong>Complete Stage 1.</strong> Finish 12 lessons and four quizzes, then take the separate final Google Forms assessment. Mari Matters must verify your pass before issuing the Financial Literacy Fellow award.</li>
+    <li><strong>Complete Stage 2.</strong> Once eligible, submit a community project proposal under My Fellowship, await approval, deliver the project, then submit the impact report. Certified Financial Leader recognition follows final verification.</li>
+   </ol>
+   <p className="mari-field-tip">Keep your name accurate in My Account for certificates. Need help? Open Help & Support below. Never share passwords or sensitive participant information.</p>
+   <div className="mari-start-actions"><Link className="btn" to={learningLink}>Open learning materials →</Link><a className="small" href="#support-desk">Get help</a></div>
+  </div>}
+  {!open&&<p className="mari-field-tip">You have completed {completed}/12 lessons and passed {passedCount}/4 weekly quizzes. Reopen this guide whenever you need it.</p>}
+ </section>;
+}
+function FellowMilestones({completed,passedCount,member,learningLink}){
+ const steps=[
+  {title:'Finish all 12 lessons',done:completed>=12,detail:completed+'/12 completed',href:learningLink},
+  {title:'Pass all four weekly quizzes',done:passedCount>=4,detail:passedCount+'/4 passed',href:learningLink+'#weekly-assessments'},
+  {title:'Final assessment verified',done:!!member.assessment_passed_at,detail:member.assessment_passed_at?'Fellow award approved': 'Complete the external assessment after your lessons and quizzes',href:learningLink+'#weekly-assessments'},
+  {title:'Stage 2 community leadership',done:!!member.leadership_completed_at,detail:member.leadership_completed_at?'Certified Financial Leader approved':member.assessment_passed_at?'Submit and complete your approved community project':'Available after Stage 1 award',href:'#mari-community-project'}
+ ];
+ const done=steps.filter(x=>x.done).length;
+ const next=steps.find(x=>!x.done);
+ return <section className="panel mari-milestones" aria-label="Fellowship milestone checklist">
+  <span className="eyebrow">YOUR PATHWAY</span><h2>My milestone checklist</h2>
+  <div className="fellow-progress" role="progressbar" aria-label="Fellowship milestone progress" aria-valuemin="0" aria-valuemax="4" aria-valuenow={done}><div style={{width:done*25+'%'}}/></div>
+  <p>{done} of 4 programme milestones reached. {next?'Next: '+next.title+'.':'Both Mari Matters recognitions achieved!'}</p>
+  <ol className="mari-milestone-list">{steps.map((step,i)=><li key={i} className={step.done?'complete':''}><span className="mari-milestone-check" aria-hidden="true">{step.done?'✓':i+1}</span><div><strong>{step.title}</strong><small>{step.detail}</small></div><a href={step.href} aria-label={'Go to '+step.title}>{step.done?'Review':'Open'}</a></li>)}</ol>
+ </section>;
+}
 export default function FellowshipPortal({user}){
  const [data,setData]=useState(null),[loading,setLoading]=useState(true),[error,setError]=useState('');
  useEffect(()=>{let mounted=true;(async()=>{try{const d=await getMemberData(user.id);if(mounted)setData(d)}catch(e){if(mounted)setError(errorText(e))}finally{if(mounted)setLoading(false)}})();return()=>{mounted=false}},[user.id]);
@@ -76,7 +116,7 @@ export default function FellowshipPortal({user}){
  const passedWeeks=new Set(quizAttempts.filter(a=>a.passed).map(a=>a.week));
  const completed=lessons.filter(l=>progress.some(p=>p.lesson_id===l.id)).length;
  const nextLesson=lessons.find(l=>!progress.some(p=>p.lesson_id===l.id) && (l.position<=3||passedWeeks.has(Math.ceil(l.position/3)-1)));
- const nextAction=nextLesson ? 'Ready for your next lesson' : passedWeeks.size<4 ? 'Review your weekly quizzes' : member.assessment_passed_at ? 'Explore Stage 2 and your awards' : 'Complete your final assessment';
+ const nextAction=member.leadership_completed_at?'Congratulations — both awards earned':nextLesson?'Ready for your next lesson':passedWeeks.size<4?'Review your weekly quizzes':member.assessment_passed_at?'Continue your Stage 2 community project':'Complete your final assessment';
  const learningLink='/learn/'+member.fellowship_cohorts.fellowship_course_id;
  const weekData=[{name:'Understanding money and financial wellbeing',desc:'Income, household budgeting and money decisions in everyday Zimbabwe.'},{name:'Saving, borrowing and financial protection',desc:'Emergency funds, mukando, debt, digital payments and consumer safety.'},{name:'Building financial independence',desc:'Small business money, cash flow, goals and money conversations.'},{name:'Financial literacy leadership',desc:'Sharing financial knowledge and planning community education.'}];
  return <main className="wrap fellowship-inner mari-fellow-mobile"><span className="eyebrow">Mari Matters · Four-week learning</span><h1>My Fellowship Learning Space</h1><p>{member.fellowship_cohorts.name} · Learn at your own pace and complete your ten-question weekly quizzes here and take part in your separate cohort discussions.</p>
@@ -93,7 +133,10 @@ export default function FellowshipPortal({user}){
   <a href="#mari-community-project">◎ <span>My Project</span></a>
   <a href="#mari-fellow-certificates">✦ <span>Certificates</span></a>
   <a href="#mari-fellow-notifications">◉ <span>Notifications</span></a>
+  <a href="#support-desk">? <span>Help & Support</span></a>
  </nav>
+ <FellowStartHere learningLink={learningLink} completed={completed} passedCount={passedWeeks.size} member={member}/>
+ <FellowMilestones completed={completed} passedCount={passedWeeks.size} member={member} learningLink={learningLink}/>
  <div className="fellow-dashboard-stats"><div><span>Learning units</span><strong>{completed} of {lessons.length} complete</strong></div><div><span>Learning pathway</span><strong>Four weeks online</strong></div><div><span>Weekly quizzes passed</span><strong>{passedWeeks.size} of 4</strong></div></div>
  <div className="panel"><h2>Stage 1 · Become a Financial Literacy Fellow</h2><p>Each week introduces practical financial topics and activities. Read your learning materials here and mark completed units so you can track your progress. Each week ends with a ten-question multiple-choice quiz, automatically marked. Score at least 70% to unlock the next week; you can retake any quiz until you pass.</p><div className="fellow-progress"><div style={{width:(lessons.length?100*completed/lessons.length:0)+'%'}}/></div><p>{completed} of {lessons.length} learning units completed.</p><div className="week-grid">{weekData.map((w,i)=>{const subset=lessons.filter(l=>l.position>=i*3+1&&l.position<=(i+1)*3);const count=subset.filter(l=>progress.some(p=>p.lesson_id===l.id)).length;return <article key={i}><strong>WEEK {String(i+1).padStart(2,'0')}</strong><h3>{w.name}</h3><p>{w.desc}</p><small>{count}/{subset.length} lessons · {passedWeeks.has(i+1)?'✓ Quiz passed':i===0||passedWeeks.has(i)?'Quiz pending':'Next week locked'}</small></article>})}</div><p style={{marginTop:24}}><Link className="btn" to={'/learn/'+member.fellowship_cohorts.fellowship_course_id}>Open learning materials →</Link></p></div>
  <section className="mari-award-pathway" aria-label="Two-stage fellowship recognition">
@@ -103,6 +146,7 @@ export default function FellowshipPortal({user}){
  <div id="mari-fellow-notifications" className="mari-mobile-anchor"><FellowshipNotifications userId={user.id}/></div>
  <div id="mari-community-project" className="mari-mobile-anchor"><LeadershipProject memberId={member.id} enabled={!!member.assessment_passed_at}/></div>
  <div id="mari-fellow-certificates" className="mari-mobile-anchor"><MyCertificates userId={user.id}/></div>
+ <FellowSupport userId={user.id}/>
  <p className="notice">These are programme-awarded Mari Matters titles. Passing weekly quizzes alone does not grant either title; recognition follows verified final assessment results and, for the second stage, approved practical community leadership work. Neither title represents a government-issued professional licence.</p>
  </main>
 }
@@ -157,6 +201,7 @@ export function FellowshipAdmin({userId}){const [cohorts,setCohorts]=useState([]
  <FellowshipAdminOverview refreshKey={cohorts.length+members.length}/>
  <FellowshipCohortManager cohorts={cohorts} onChanged={reload}/>
  <FellowshipReports cohorts={cohorts}/>
+ <FellowSupportAdmin/>
  <section className="panel admin-section"><h2>Create a new cohort</h2><p>New cohorts start as planned and without an access code. Configure the code in Cohort management, then open registration only when accepted applicants are ready to join.</p><form onSubmit={addCohort}><label>New cohort name<input required value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Mari Matters 2027 Cohort 1"/></label><button disabled={busy}>Create cohort</button></form></section>
  <section className="panel admin-section"><h2>Fellows · assessment and leadership recognition</h2><p>After checking a participant's external final Google Form result, confirm Stage 1 to recognise them as a Financial Literacy Fellow. After reviewing and approving the subsequent community leadership stage, confirm Stage 2 to recognise them as a Certified Financial Leader. Each approval automatically issues a numbered certificate. You can download issued certificates directly beside each fellow's name, and fellows can access their own copies under My Fellowship and My Account. Verify each fellow’s full name before approval.</p>{members.length?members.map(m=><div className="cohort-row mari-member-review" key={m.id}><div><strong>{m.fellowName||'Name not provided'}</strong><small>{m.fellowship_cohorts?.name} · {stages[m.stage]||m.stage}</small></div><div className="mari-review-actions">
  {m.leadership_completed_at?<strong>✓ Certified Financial Leader</strong>:m.assessment_passed_at?<><strong>✓ Financial Literacy Fellow</strong><button type="button" className="small" disabled={busy} onClick={()=>confirmAward(m,'leadership')}>Confirm approved leadership project</button></>:<button type="button" className="small" disabled={busy} onClick={()=>confirmAward(m,'assessment')}>Confirm final assessment passed</button>}
