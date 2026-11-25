@@ -751,3 +751,52 @@ button,a,input,select,textarea{touch-action:manipulation}
  html:focus-within{scroll-behavior:auto!important}
  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* Phase B — simple fellow onboarding, milestones, support and notifications */
+.mari-start-here,.mari-milestones,.mari-help,.mari-support-admin{min-width:0;scroll-margin-top:110px}
+.mari-start-heading,.mari-support-history-header,.mari-support-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.mari-start-heading h2,.mari-support-history-header h2{margin:6px 0}
+.mari-start-here p,.mari-help p{line-height:1.65}
+.mari-start-steps{margin:16px 0 18px;padding-left:23px;display:grid;gap:12px}
+.mari-start-steps li{padding-left:7px;line-height:1.6}
+.mari-start-steps li strong{color:#123b79}
+.mari-start-steps a,.mari-milestone-list a{font-weight:700}
+.mari-start-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mari-field-tip{font-size:.9rem;color:#526579}
+.mari-milestones .fellow-progress{margin-top:12px}
+.mari-milestone-list{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px}
+.mari-milestone-list li{display:flex;align-items:center;gap:12px;border:1px solid #e0e8f1;padding:13px;border-radius:12px;background:#fff;min-width:0}
+.mari-milestone-list li.complete{background:#f4f9f6;border-color:#d7e8db}
+.mari-milestone-check{width:30px;height:30px;min-width:30px;display:grid;place-items:center;border-radius:50%;background:#e9edf8;color:#123b79;font-weight:800}
+.mari-milestone-list li.complete .mari-milestone-check{background:#d2e8d9;color:#195f37}
+.mari-milestone-list li>div{flex:1;min-width:0}
+.mari-milestone-list li strong{display:block;font-size:.98rem}
+.mari-milestone-list li small{display:block;color:#526579;margin-top:4px;line-height:1.45}
+.mari-milestone-list li>a{font-size:.9rem}
+.mari-help h3{margin:24px 0 12px}
+.mari-faq{border-top:1px solid #dfe5ef}
+.mari-faq-item{border-bottom:1px solid #dfe5ef}
+.mari-faq-item button{display:flex;align-items:center;justify-content:space-between;text-align:left;width:100%;gap:12px;background:transparent;color:inherit;border:0;padding:15px 0;min-height:48px;font:inherit;font-weight:700;cursor:pointer}
+.mari-faq-item button>span{font-size:1.25rem;color:#123b79}
+.mari-faq-item p{margin:0 0 16px;color:#41536b}
+.mari-support-form{display:grid;gap:13px;max-width:720px}
+.mari-support-form label,.mari-support-admin-controls label{display:grid;gap:6px;font-weight:650}
+.mari-support-form input,.mari-support-form select,.mari-support-form textarea,.mari-support-admin-controls select,.mari-support-admin-controls textarea{width:100%;min-width:0;max-width:100%;box-sizing:border-box;border-radius:9px;border:1px solid #becbdc;padding:11px 12px;background:#fff;color:#1e2c42;font:inherit}
+.mari-support-form .btn{justify-self:start}
+.mari-support-history{display:grid;gap:12px}
+.mari-support-item{border:1px solid #dce5ef;border-radius:11px;padding:15px;overflow-wrap:anywhere}
+.mari-support-item-head{align-items:center;margin-bottom:6px}
+.mari-support-item-head small{border-radius:50px;padding:4px 9px;background:#f0f3f8;color:#123b79;font-weight:700}
+.mari-support-item>small{color:#526579}
+.mari-support-item p{margin:9px 0 0;white-space:pre-wrap}
+.mari-support-reply{padding:12px;border-left:3px solid #123b79;background:#f4f7fc;border-radius:0 8px 8px 0}
+.mari-support-admin-controls{display:grid;gap:12px;margin-top:14px}
+.mari-support-admin-controls button{justify-self:start}
+@media(max-width:520px){
+ .mari-milestone-list li{padding:10px;gap:9px}
+ .mari-milestone-list li strong{font-size:.91rem}
+ .mari-milestone-list li small{font-size:.79rem}
+ .mari-start-actions .btn,.mari-support-form .btn{width:100%;justify-content:center}
+ .mari-support-form input,.mari-support-form select,.mari-support-form textarea{font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){.mari-faq-item *, .mari-milestones *{scroll-behavior:auto}}
